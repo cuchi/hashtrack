@@ -1,0 +1,10 @@
+{
+  "name": "hashtrack-server",
+  "version": "0.0.1",
+  "description": "A simple Twitter hashtag tracking service",
+  "main": "build/server.js",
+  "repository": "https://github.com/cuchi/hashtrack",
+  "author": "Paulo Henrique Cuchi <paulo.cuchi@gmail.com>",
+  "license": "MIT",
+  "private": false
+}
