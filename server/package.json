@@ -11,8 +11,9 @@
     "apollo-server-koa": "2.9.16",
     "graphql": "14.5.8",
     "koa": "2.11.0",
-    "reflect-metadata": "^0.1.13",
-    "type-graphql": "0.17.6"
+    "reflect-metadata": "0.1.13",
+    "type-graphql": "0.17.6",
+    "typedi": "0.8.0"
   },
   "devDependencies": {
     "@types/graphql": "14.5.0",
