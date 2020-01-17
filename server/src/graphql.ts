@@ -25,13 +25,13 @@ function authChecker(resolverData: ResolverData<Context>) {
     return resolverData.context.session !== undefined
 }
 
-const schema = buildSchemaSync({
+export const schema = buildSchemaSync({
     resolvers: [SessionResolver, UserResolver],
     container: Container,
     authChecker
 })
 
-const server = new ApolloServer({ schema, context: contextHandler })
+export const server = new ApolloServer({ schema, context: contextHandler })
 
 export function applyGraphql(app: Koa) {
     server.applyMiddleware({ app, path: '/graphql' })

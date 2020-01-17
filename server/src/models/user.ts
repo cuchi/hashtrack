@@ -4,10 +4,12 @@ import {
     Column,
     CreateDateColumn,
     UpdateDateColumn,
-    OneToMany
+    OneToMany,
+    Index
 } from 'typeorm'
 import { Session } from './session'
 
+@Index(['email'], { unique: true })
 @Entity()
 export class User {
     @PrimaryGeneratedColumn('uuid')

@@ -5,7 +5,6 @@
     "module": "commonjs",
     "lib": ["ES2020", "esnext.asynciterable"],
     "outDir": "./build",
-    "rootDir": "./src",
     "strict": true,
     "strictPropertyInitialization": false,
     "noUnusedLocals": true,
@@ -17,5 +16,8 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "forceConsistentCasingInFileNames": true
-  }
+  },
+  "include": [
+    "src/**/*", "test/**/*", "scripts/*"
+  ]
 }
