@@ -6,5 +6,22 @@
   "repository": "https://github.com/cuchi/hashtrack",
   "author": "Paulo Henrique Cuchi <paulo.cuchi@gmail.com>",
   "license": "MIT",
-  "private": false
+  "private": false,
+  "dependencies": {
+    "apollo-server-koa": "2.9.16",
+    "graphql": "14.5.8",
+    "koa": "2.11.0",
+    "reflect-metadata": "^0.1.13",
+    "type-graphql": "0.17.6"
+  },
+  "devDependencies": {
+    "@types/graphql": "14.5.0",
+    "@types/koa": "2.11.0",
+    "ts-node-dev": "1.0.0-pre.44",
+    "typescript": "3.7.5"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "ts-node-dev --respawn --transpileOnly src/server.ts"
+  }
 }
