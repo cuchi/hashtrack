@@ -1,0 +1,27 @@
+{
+  "name": "hashtrack-client",
+  "version": "0.0.1",
+  "description": "A simple Twitter hashtag tracking service",
+  "main": "build/server.js",
+  "repository": "https://github.com/cuchi/hashtrack",
+  "author": "Paulo Henrique Cuchi <paulo.cuchi@gmail.com>",
+  "license": "MIT",
+  "private": false,
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "11.0.1",
+    "@rollup/plugin-node-resolve": "7.0.0",
+    "rollup": "1.29.0",
+    "rollup-plugin-livereload": "1.0.4",
+    "rollup-plugin-svelte": "5.1.1",
+    "rollup-plugin-terser": "5.2.0",
+    "svelte": "3.17.1"
+  },
+  "dependencies": {
+    "sirv-cli": "0.4.5"
+  },
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "start": "sirv public"
+  }
+}
