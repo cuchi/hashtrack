@@ -1,18 +1,21 @@
 import { buildSchemaSync, ResolverData } from "type-graphql"
 import { UserResolver } from "./resolvers/user"
+import { SessionResolver } from "./resolvers/session"
 import { ApolloServer } from "apollo-server-koa"
 import Koa, { Context } from 'koa'
 import { Container } from 'typedi'
+import SessionService from "./services/session"
+import { Session } from "./models/session"
 
 export type AuthorizedContext = Context & {
-    session: { foo: string }
+    session: Session
 }
 
-function contextHandler(fullContext: { ctx: Context }) {
+async function contextHandler(fullContext: { ctx: Context }) {
     const { ctx } = fullContext
     if (ctx.headers.authorization) {
-        // TODO: Load session from token.
-        ctx.session = { foo: 'bar' }
+        const sessions = Container.get(SessionService)
+        ctx.session = await sessions.find(ctx.headers.authorization)
     }
 
     return ctx
@@ -23,7 +26,7 @@ function authChecker(resolverData: ResolverData<Context>) {
 }
 
 const schema = buildSchemaSync({
-    resolvers: [UserResolver],
+    resolvers: [SessionResolver, UserResolver],
     container: Container,
     authChecker
 })

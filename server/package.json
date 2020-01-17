@@ -9,13 +9,18 @@
   "private": false,
   "dependencies": {
     "apollo-server-koa": "2.9.16",
+    "bcrypt": "3.0.7",
     "graphql": "14.5.8",
     "koa": "2.11.0",
+    "pg": "7.17.1",
     "reflect-metadata": "0.1.13",
     "type-graphql": "0.17.6",
-    "typedi": "0.8.0"
+    "typedi": "0.8.0",
+    "typeorm": "0.2.22",
+    "typeorm-typedi-extensions": "0.2.3"
   },
   "devDependencies": {
+    "@types/bcrypt": "3.0.0",
     "@types/graphql": "14.5.0",
     "@types/koa": "2.11.0",
     "ts-node-dev": "1.0.0-pre.44",

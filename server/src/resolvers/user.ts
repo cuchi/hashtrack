@@ -39,7 +39,7 @@ export class UserResolver {
     }
 
     @Mutation(_ => User)
-    createUser(@Args(_ => UserCreation) user: UserCreation): User {
+    createUser(@Args(_ => UserCreation) user: UserCreation): Promise<User> {
         return this.users.create(user)
     }
 }
