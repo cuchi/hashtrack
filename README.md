@@ -22,6 +22,7 @@ This is a still a **work in progress**.
   - [x] Setup framework - Svelte
   - [x] Setup state controller - Svelte has one!
   - [ ] Setup tests - Jest + Webdriverio (?)
+  - [ ] Setup style
   - [ ] Setup GraphQL client
 
 ## Phase 2 - MVP
@@ -54,7 +55,7 @@ This is a still a **work in progress**.
     - [ ] Client
 
 ## Phase 3 - Improvements
-- [ ] Make it beautiful
+- [ ] Make it beautiful & responsive
 - [ ] Use GraphQL subscriptions (websockets) to push new tweets to the browser
 - [ ] Enharden the API using a rate limit method
 - [ ] Cache searches to improve response time
