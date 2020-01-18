@@ -1,6 +1,6 @@
 # Hashtrack
 
-Hashtrack is a web application which tracks Twitter hashtags.
+Hashtrack is a web application that tracks Twitter hashtags.
 
 <hr/>
 
@@ -55,7 +55,7 @@ This is still a **work in progress**.
     - [ ] Client
 
 ### Phase 3 - Improvements
-- [ ] Make it beautiful & responsive
+- [ ] Make the client beautiful, responsive & animated
 - [ ] Use GraphQL subscriptions (websockets) to push new tweets to the browser
 - [ ] Enharden the API using a rate limit method
 - [ ] Cache searches to improve response time
