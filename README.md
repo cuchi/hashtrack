@@ -9,9 +9,9 @@ web application from the ground up.
 
 This is still a **work in progress**.
 
-# Checklist
+## Roadmap
 
-## Phase 1 - Scaffold
+### Phase 1 - Scaffold
 - [x] Server
   - [x] Setup language/environemnt - Typescript + Node.js
   - [x] Setup persistence - PostgreSQL
@@ -25,16 +25,16 @@ This is still a **work in progress**.
   - [x] Setup style
   - [x] Setup GraphQL client
 
-## Phase 2 - MVP
+### Phase 2 - MVP
 - [ ] Setup linting & code style - ESLint and/or Prettier
 - [ ] Setup infrastructure - Terraform
 - [ ] Setup CI - Travis
 - [ ] Setup deploy - Github Actions
 - [ ] Core business rules
-  - [ ] User creation
+  - [x] User creation
     - [x] Server
-    - [ ] Client
-  - [ ] Authentication
+    - [x] Client
+  - [x] Authentication
     - [x] Server
     - [x] Client
   - [ ] Hashtag creation
@@ -54,7 +54,7 @@ This is still a **work in progress**.
     - [ ] Server
     - [ ] Client
 
-## Phase 3 - Improvements
+### Phase 3 - Improvements
 - [ ] Make it beautiful & responsive
 - [ ] Use GraphQL subscriptions (websockets) to push new tweets to the browser
 - [ ] Enharden the API using a rate limit method
