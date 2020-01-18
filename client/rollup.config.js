@@ -1,8 +1,10 @@
-import svelte from 'rollup-plugin-svelte';
-import resolve from '@rollup/plugin-node-resolve';
-import commonjs from '@rollup/plugin-commonjs';
-import livereload from 'rollup-plugin-livereload';
-import { terser } from 'rollup-plugin-terser';
+import svelte from 'rollup-plugin-svelte'
+import resolve from '@rollup/plugin-node-resolve'
+import commonjs from '@rollup/plugin-commonjs'
+import livereload from 'rollup-plugin-livereload'
+import { terser } from 'rollup-plugin-terser'
+import copy from 'rollup-plugin-copy'
+import { autoPreprocess } from 'svelte-preprocess/dist/autoProcess'
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -21,8 +23,19 @@ export default {
 			// we'll extract any component CSS out into
 			// a separate file — better for performance
 			css: css => {
-				css.write('public/build/bundle.css');
-			}
+				css.write('public/build/bundle2.css');
+			},
+			preprocess: autoPreprocess
+		}),
+
+		copy({
+			targets: [{ 
+				src: 'node_modules/uikit/dist/css/uikit.min.css',
+				dest: 'public/build'
+			}, { 
+				src: 'node_modules/uikit/dist/js/uikit.min.js',
+				dest: 'public/build'
+			}]
 		}),
 
 		// If you have external dependencies installed from

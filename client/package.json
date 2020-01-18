@@ -14,10 +14,20 @@
     "rollup-plugin-livereload": "1.0.4",
     "rollup-plugin-svelte": "5.1.1",
     "rollup-plugin-terser": "5.2.0",
-    "svelte": "3.17.1"
+    "svelte": "3.17.1",
+    "uikit": "^3.2.7"
   },
   "dependencies": {
-    "sirv-cli": "0.4.5"
+    "apollo-cache-inmemory": "^1.6.5",
+    "apollo-client": "^2.6.8",
+    "apollo-link-http": "^1.5.16",
+    "graphql": "^14.5.8",
+    "graphql-tag": "^2.10.1",
+    "node-sass": "^4.13.1",
+    "rollup-plugin-copy": "^3.2.0",
+    "rollup-plugin-scss": "2.1.0",
+    "sirv-cli": "0.4.5",
+    "svelte-preprocess": "^3.3.0"
   },
   "scripts": {
     "build": "rollup -c",
