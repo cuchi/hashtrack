@@ -17,6 +17,19 @@ const authLink = setContext((_, { headers }) => {
     }
 })
 
+function handleErrorMessage(error) {
+    const { graphQLErrors, networkError } = error
+
+    if (graphQLErrors.length > 0) {
+        return graphQLErrors[0].message
+    }
+    if (networkError && networkError.message.includes('Failed to fetch')) {
+        return 'Could not connect to the server'
+    }
+
+    return 'Ooops, something went wrong!'
+}
+
 const client = new ApolloClient({ cache, link: authLink.concat(link) })
 
 async function call(graphql, variables = {}) {
@@ -26,8 +39,7 @@ async function call(graphql, variables = {}) {
         const result = await this[action]({ [operation]: graphql, variables })
         return Object.values(result.data)[0]
     } catch (error) {
-        console.dir(error)
-        throw new Error(error.graphQLErrors[0].message)
+        throw new Error(handleErrorMessage(error))
     }
 }
 
