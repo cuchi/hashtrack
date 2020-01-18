@@ -5,7 +5,11 @@
 	let sessionStatus = 'pending'
 	checkStatus()
 
-	async function checkStatus() {
+	async function checkStatus(event) {
+		if (event) {
+			localStorage.setItem('token', event.detail.token)
+		}
+
 		try {
 			await getCurrentUser()
 			sessionStatus = 'logged-in'
@@ -21,6 +25,6 @@
 	{:else if sessionStatus === 'logged-in'}
 		<h1>Logged in!</h1>
 	{:else}
-		<Login/>
+		<Login on:sessionCreated={checkStatus} />
 	{/if}
 </main>

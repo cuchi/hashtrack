@@ -9,9 +9,6 @@ const createSession = gql`
     }
 `
 
-export function login(email, password) {
-    return client.mutate({ 
-        mutation: createSession, 
-        variables: { email, password } 
-    })
+export async function login(email, password) {
+    return client.call(createSession, { email, password })
 }
