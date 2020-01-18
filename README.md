@@ -18,10 +18,9 @@ This is still a **work in progress**.
   - [x] Setup ORM - TypeORM
   - [x] Setup API framework - Type-Graphql
   - [x] Setup tests - Mocha + Chai
-- [ ] Client
+- [x] Client
   - [x] Setup framework - Svelte
   - [x] Setup state controller - Svelte has one!
-  - [ ] Setup tests - Jest + Webdriverio (?)
   - [x] Setup style
   - [x] Setup GraphQL client
 
@@ -38,23 +37,25 @@ This is still a **work in progress**.
     - [x] Server
     - [x] Client
   - [ ] Hashtag creation
-    - [ ] Server
+    - [x] Server
     - [ ] Client
   - [ ] Hashtag removal
-    - [ ] Server
+    - [x] Server
     - [ ] Client
   - [ ] Tweet retrieval & store (server only)
   - [ ] Tweet listing & search
     - [ ] Server
     - [ ] Client
-  - [ ] User self deletion
-    - [ ] Server
-    - [ ] Client
-  - [ ] User self update
-    - [ ] Server
-    - [ ] Client
 
 ### Phase 3 - Improvements
+- [ ] User self deletion
+  - [ ] Server
+  - [ ] Client
+- [ ] User self update
+  - [ ] Server
+  - [ ] Client
+- [ ] Setup E2E tests - Jest + Webdriverio (?)
+- [ ] Pagination
 - [ ] Make the client beautiful, responsive & animated
 - [ ] Use GraphQL subscriptions (websockets) to push new tweets to the browser
 - [ ] Enharden the API using a rate limit method
