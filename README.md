@@ -5,9 +5,9 @@ Hashtrack is a web application which tracks Twitter hashtags.
 <hr/>
 
 The purpose of this project is to build a maintainable easy-to-deploy fullstack
-web application from ground up.
+web application from the ground up.
 
-This is a still a **work in progress**.
+This is still a **work in progress**.
 
 # Checklist
 
@@ -22,8 +22,8 @@ This is a still a **work in progress**.
   - [x] Setup framework - Svelte
   - [x] Setup state controller - Svelte has one!
   - [ ] Setup tests - Jest + Webdriverio (?)
-  - [ ] Setup style
-  - [ ] Setup GraphQL client
+  - [x] Setup style
+  - [x] Setup GraphQL client
 
 ## Phase 2 - MVP
 - [ ] Setup linting & code style - ESLint and/or Prettier
@@ -36,7 +36,7 @@ This is a still a **work in progress**.
     - [ ] Client
   - [ ] Authentication
     - [x] Server
-    - [ ] Client
+    - [x] Client
   - [ ] Hashtag creation
     - [ ] Server
     - [ ] Client
