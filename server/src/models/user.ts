@@ -8,6 +8,7 @@ import {
     Index
 } from 'typeorm'
 import { Session } from './session'
+import { Track } from './track'
 
 @Index(['email'], { unique: true })
 @Entity()
@@ -31,5 +32,8 @@ export class User {
     updatedAt: Date
 
     @OneToMany(_ => Session, s => s.user)
-    sessions?: Session[]
+    sessions: Session[]
+
+    @OneToMany(_ => Track, t => t.hashtag)
+    tracks: Track[]
 }

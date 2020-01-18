@@ -1,10 +1,11 @@
 import { buildSchemaSync, ResolverData } from "type-graphql"
-import { UserResolver } from "./resolvers/user"
-import { SessionResolver } from "./resolvers/session"
+import { UserResolver } from "./resolvers/user-resolver"
+import { SessionResolver } from "./resolvers/session-resolver"
+import { TrackResolver } from "./resolvers/track-resolver"
 import { ApolloServer } from "apollo-server-koa"
 import Koa, { Context } from 'koa'
 import { Container } from 'typedi'
-import SessionService from "./services/session"
+import SessionService from "./services/session-service"
 import { Session } from "./models/session"
 
 export type AuthorizedContext = Context & {
@@ -26,7 +27,7 @@ function authChecker(resolverData: ResolverData<Context>) {
 }
 
 export const schema = buildSchemaSync({
-    resolvers: [SessionResolver, UserResolver],
+    resolvers: [SessionResolver, UserResolver, TrackResolver],
     container: Container,
     authChecker
 })

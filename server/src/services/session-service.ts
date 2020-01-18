@@ -2,7 +2,7 @@ import { Service, Inject } from "typedi"
 import { InjectRepository } from 'typeorm-typedi-extensions'
 import { Session } from "../models/session"
 import { Repository } from 'typeorm'
-import UserService from "./user"
+import UserService from "./user-service"
 import { randomBytes } from 'crypto'
 
 @Service()

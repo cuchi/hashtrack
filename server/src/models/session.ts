@@ -13,7 +13,7 @@ export class Session {
     @PrimaryColumn('text')
     token: string
 
-    @Column('text')
+    @Column('uuid')
     userId: string
 
     @CreateDateColumn()

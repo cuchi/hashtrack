@@ -1,6 +1,6 @@
 import { Service } from "typedi"
 import { AuthorizedContext } from "../graphql"
-import { UserCreation } from "../resolvers/user"
+import { UserCreation } from "../resolvers/user-resolver"
 import { InjectRepository } from "typeorm-typedi-extensions"
 import { User } from "../models/user"
 import { Repository } from 'typeorm'

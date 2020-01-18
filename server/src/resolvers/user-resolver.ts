@@ -9,7 +9,7 @@ import {
     ArgsType,
     Args
 } from "type-graphql"
-import UserService from "../services/user"
+import UserService from "../services/user-service"
 import { Inject } from "typedi"
 import { AuthorizedContext } from "../graphql"
 

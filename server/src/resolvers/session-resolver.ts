@@ -7,7 +7,7 @@ import {
     Args
 } from "type-graphql"
 import { Inject } from "typedi"
-import SessionService from "../services/session"
+import SessionService from "../services/session-service"
 
 @ObjectType()
 class Session {
