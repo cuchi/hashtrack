@@ -8,6 +8,7 @@
   "license": "MIT",
   "private": false,
   "dependencies": {
+    "@koa/cors": "3.0.0",
     "apollo-server-koa": "2.9.16",
     "bcrypt": "3.0.7",
     "graphql": "14.5.8",
