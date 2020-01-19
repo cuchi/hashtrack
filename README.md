@@ -27,6 +27,8 @@ This is still a **work in progress**.
 ### Phase 2 - MVP
 - [ ] Setup linting & code style - ESLint and/or Prettier
 - [ ] Setup infrastructure - Terraform
+  - [x] Application
+  - [ ] Database
 - [ ] Setup CI - Travis
 - [ ] Setup deploy - Github Actions
 - [ ] Core business rules
@@ -42,7 +44,7 @@ This is still a **work in progress**.
   - [ ] Hashtag removal
     - [x] Server
     - [ ] Client
-  - [ ] Tweet retrieval & store (server only)
+  - [x] Tweet retrieval & store (server only)
   - [ ] Tweet listing & search
     - [ ] Server
     - [ ] Client
