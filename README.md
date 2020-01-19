@@ -46,7 +46,7 @@ This is still a **work in progress**.
     - [ ] Client
   - [x] Tweet retrieval & store (server only)
   - [ ] Tweet listing & search
-    - [ ] Server
+    - [x] Server
     - [ ] Client
 
 ### Phase 3 - Improvements
