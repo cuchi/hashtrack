@@ -29,8 +29,7 @@ This is still a **work in progress**.
 - [ ] Setup infrastructure - Terraform
   - [x] Application
   - [ ] Database
-- [ ] Setup CI - Travis
-- [ ] Setup deploy - Github Actions
+- [x] Setup server-side logging
 - [ ] Core business rules
   - [x] User creation
     - [x] Server
@@ -38,10 +37,10 @@ This is still a **work in progress**.
   - [x] Authentication
     - [x] Server
     - [x] Client
-  - [ ] Hashtag creation
+  - [ ] Hashtag tracking creation
     - [x] Server
     - [ ] Client
-  - [ ] Hashtag removal
+  - [ ] Hashtag tracking removal
     - [x] Server
     - [ ] Client
   - [x] Tweet retrieval & store (server only)
@@ -50,6 +49,8 @@ This is still a **work in progress**.
     - [ ] Client
 
 ### Phase 3 - Improvements
+- [ ] Setup CI - Travis
+- [ ] Setup deploy - Github Actions
 - [ ] User self deletion
   - [ ] Server
   - [ ] Client
