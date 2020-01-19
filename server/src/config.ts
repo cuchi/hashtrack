@@ -1,9 +1,33 @@
 import { env } from 'process'
+import dotenv from 'dotenv'
+
+if (env.NODE_ENV !== 'test') {
+    dotenv.config()
+}
+
+function getExisting(varName: string) {
+    const value = env[varName]
+    if (value === undefined) {
+        console.error(`Required env var ${varName} was not defined!`)
+        process.exit(1)
+    }
+    return value
+}
 
 const isProd = env.NODE_ENV === 'production'
 
-function isTrue(envVar: string) {
-    return ['1', 'true', 't', 'yes', 'y'].includes(envVar.toLowerCase())
+function getTwitterConfig() {
+    if (env.TWITTER_CONSUMER_KEY) {
+        return {
+            kind: 'enabled',
+            consumerKey: getExisting('TWITTER_CONSUMER_KEY'),
+            consumerSecret: getExisting('TWITTER_CONSUMER_SECRET'),
+            accessToken: getExisting('TWITTER_ACCESS_TOKEN'),
+            accessTokenSecret: getExisting('TWITTER_ACCESS_TOKEN_SECRET')
+        } as const
+    }
+
+    return { kind: 'disabled' } as const
 }
 
 export default {
@@ -14,8 +38,7 @@ export default {
         database: env.PGDATABASE || 'postgres',
         host: env.PGHOST || 'localhost',
         port: Number(env.PGPORT) || 5432,
-        synchronize: env.FORCE_SYNC === undefined
-            ? !isProd
-            : isTrue(env.FORCE_SYNC)
-    }
+        synchronize: !isProd || Boolean(env.FORCE_SYNC)
+    },
+    twitter: getTwitterConfig()
 }

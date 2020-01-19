@@ -4,6 +4,8 @@ import cors from '@koa/cors'
 import config from './config'
 import { applyGraphql } from './graphql'
 import dbConnection from './database'
+import Container from "typedi"
+import TweetService from "./services/tweet-service"
 
 const app = new Koa()
 
@@ -17,6 +19,7 @@ app.use(async ctx => {
 
 async function run() {
     await dbConnection
+    await Container.get(TweetService).refreshStream()
     app.listen(config.port)
     console.log(`Listening on port ${config.port}`)
 }
