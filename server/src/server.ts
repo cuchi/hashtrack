@@ -6,6 +6,7 @@ import { applyGraphql } from './graphql'
 import dbConnection from './database'
 import Container from "typedi"
 import TweetService from "./services/tweet-service"
+import log from "./logger"
 
 const app = new Koa()
 
@@ -22,15 +23,15 @@ async function run() {
     const tweetService = Container.get(TweetService)
     await tweetService.refreshStream()
     app.listen(config.port)
-    console.log(`Listening on port ${config.port}`)
+    log.info(`Listening on port ${config.port}`)
 
     setInterval(async () => {
-        console.log('Refreshing the tweet stream...')
+        log.info('Refreshing the tweet stream...')
         await tweetService.refreshStream()
     }, config.twitter.refreshInterval * 1000)
 }
 
 run().catch(error => {
-    console.error(error.stack ?? error.message)
+    log.error(error.stack ?? error.message)
     process.exit(1)
 })

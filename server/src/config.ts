@@ -1,9 +1,10 @@
 import { env } from 'process'
 import dotenv from 'dotenv'
 
-if (env.NODE_ENV !== 'test') {
-    dotenv.config()
-}
+const isProd = env.NODE_ENV === 'production'
+const isTest = env.NODE_ENV === 'test'
+
+dotenv.config()
 
 function getExisting(varName: string) {
     const value = env[varName]
@@ -14,10 +15,8 @@ function getExisting(varName: string) {
     return value
 }
 
-const isProd = env.NODE_ENV === 'production'
-
 function getTwitterConfig() {
-    if (env.TWITTER_CONSUMER_KEY) {
+    if (env.TWITTER_CONSUMER_KEY && !isTest) {
         return {
             kind: 'enabled',
             consumerKey: getExisting('TWITTER_CONSUMER_KEY'),
@@ -30,8 +29,24 @@ function getTwitterConfig() {
     return { kind: 'disabled' } as const
 }
 
+function getLogLevel() {
+    if (isTest) {
+        return 'error'
+    }
+
+    switch (env.LOG_LEVEL) {
+        case 'info':
+        case 'debug':
+        case 'error':
+            return env.LOG_LEVEL
+        default:
+            return 'info'
+    }
+}
+
 export default {
     port: Number(env.PORT) || 8080,
+    logLevel: getLogLevel(),
     db: {
         username: env.PGUSER || 'postgres',
         password: env.PGPASSWORD ?? '123456',

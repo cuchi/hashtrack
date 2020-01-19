@@ -5,6 +5,7 @@ import { Tweet } from "../models/tweet"
 import HashtagService from './hashtag-service'
 import { TwitterClient, Stream } from "./twitter-client-service"
 import { AuthorizedContext } from "../graphql"
+import log from "../logger"
 
 type ApiTweet = {
     id_str: string
@@ -40,15 +41,15 @@ export default class TweetService {
         const names = hashtags.map(({ name }) => `#${name}`)
 
         if (names.length === 0) {
-            console.log('No hashtags to track at the moment')
+            log.info('No hashtags to track at the moment')
             return
         }
 
-        console.log(`Tracking ${names.length} hashtags...`)
+        log.info(`Tracking ${names.length} hashtags...`)
         this.activeStream = this.client.stream('statuses/filter', { track: names })
         
         this.activeStream.on('tweet', async (tweet: ApiTweet) => {
-            console.log(`Got a tweet: ${tweet.id_str}`)
+            log.info(`Got a tweet: ${tweet.id_str}`)
             await this.repository.save({
                 authorName: tweet.user.screen_name,
                 publishedAt: tweet.created_at,

@@ -3,14 +3,10 @@ import { InjectRepository } from 'typeorm-typedi-extensions'
 import { Repository } from 'typeorm'
 import { Track } from "../models/track"
 import { AuthorizedContext } from "../graphql"
-import TweetService from "./tweet-service"
 import HashtagService from "./hashtag-service"
 
 @Service()
 export default class TrackService {
-
-    @Inject(_ => TweetService)
-    private readonly tweets: TweetService
 
     @Inject(_ => HashtagService)
     private readonly hashtags: HashtagService
@@ -24,14 +20,12 @@ export default class TrackService {
         if (hashtagName.length === 0) {
             throw new Error(`"${name}" is not a valid hashtag`)
         }
-        const track = await this.repository.save({
+
+        return this.repository.save({
             userId,
             prettyName: name,
             hashtag: { name: hashtagName }
         })
-        await this.tweets.refreshStream()
-
-        return track
     }
 
     async remove(context: AuthorizedContext, name: string) {

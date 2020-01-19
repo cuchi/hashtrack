@@ -3,17 +3,22 @@ import { UserResolver } from "./resolvers/user-resolver"
 import { SessionResolver } from "./resolvers/session-resolver"
 import { TrackResolver } from "./resolvers/track-resolver"
 import { ApolloServer } from "apollo-server-koa"
-import Koa, { Context } from 'koa'
+import Koa from 'koa'
 import { Container } from 'typedi'
 import SessionService from "./services/session-service"
 import { Session } from "./models/session"
 import { TweetResolver } from "./resolvers/tweet-resolver"
 
+type Context = {
+    headers: Record<string, string | undefined>
+    session?: Session
+}
+
 export type AuthorizedContext = Context & {
     session: Session
 }
 
-async function contextHandler(fullContext: { ctx: Context }) {
+export async function contextHandler(fullContext: { ctx: Context }) {
     const { ctx } = fullContext
     if (ctx.headers.authorization) {
         const sessions = Container.get(SessionService)

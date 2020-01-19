@@ -26,7 +26,8 @@ export default class SessionService {
     }
 
     async create(email: string, password: string) {
-        const user = await this.users.authenticate(email, password)
+        const user = await this.users
+            .authenticate(email.trim().toLowerCase(), password)
 
         return this.repository.save({
             token: this.generateToken(),

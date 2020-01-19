@@ -11,21 +11,27 @@
     "@koa/cors": "3.0.0",
     "apollo-server-koa": "2.9.16",
     "bcrypt": "3.0.7",
+    "class-validator": "0.11.0",
+    "date-fns": "2.9.0",
     "dotenv": "8.2.0",
     "graphql": "14.5.8",
     "koa": "2.11.0",
+    "patch-package": "6.2.0",
     "pg": "7.17.1",
+    "postinstall-postinstall": "2.0.0",
     "reflect-metadata": "0.1.13",
-    "twit": "^2.2.11",
+    "twit": "2.2.11",
     "type-graphql": "0.17.6",
     "typedi": "0.8.0",
     "typeorm": "0.2.22",
-    "typeorm-typedi-extensions": "0.2.3"
+    "typeorm-typedi-extensions": "0.2.3",
+    "winston": "3.2.1"
   },
   "devDependencies": {
     "@types/bcrypt": "3.0.0",
-    "@types/chai": "^4.2.7",
+    "@types/chai": "4.2.7",
     "@types/chai-as-promised": "7.1.2",
+    "@types/faker": "4.1.9",
     "@types/graphql": "14.5.0",
     "@types/koa": "2.11.0",
     "@types/mocha": "5.2.7",
@@ -34,6 +40,7 @@
     "apollo-server-testing": "2.9.16",
     "chai": "4.2.0",
     "chai-as-promised": "7.1.1",
+    "faker": "4.1.0",
     "mocha": "7.0.0",
     "ts-node-dev": "1.0.0-pre.44",
     "typescript": "3.7.5"
@@ -41,6 +48,7 @@
   "scripts": {
     "build": "tsc",
     "dev": "ts-node-dev --respawn --transpileOnly src/server.ts",
-    "test": "mocha --exit -r ts-node/register/transpile-only -file test/suite.ts test/integration/**"
+    "test": "NODE_ENV=test mocha --exit -r ts-node/register/transpile-only -file test/suite.ts test/integration/**",
+    "postinstall": "patch-package"
   }
 }

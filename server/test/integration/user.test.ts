@@ -1,14 +1,12 @@
 import { describe, it, beforeEach } from "mocha"
-import { createClient } from "./graphql-helpers"
-import dbConnection from '../../src/database'
+import { createClient } from "./helpers/graphql-helpers"
 import { expect } from 'chai'
+import { resetDatabase } from "./helpers/db-helpers"
 
 describe('Users', async () => {
     const client = createClient()
 
-    beforeEach(async () => {
-        await (await dbConnection).synchronize(true)
-    })
+    beforeEach(resetDatabase)
 
     it('Should create a valid user successfully', async () => {
         const createdUser = await client.call('createUser', {
@@ -38,5 +36,30 @@ describe('Users', async () => {
         await expect(secondCreation).to.be.rejectedWith(
             /duplicate key value violates unique constraint/
         )
+    })
+
+    it('Should fail to create an user with an invalid email', async () => {
+        const user = {
+            name: 'John Doe',
+            email: 'john.doe',
+            password: 'secret123456'
+        }
+
+        const creation = client.call('createUser', user)
+
+        await expect(creation).to.be
+            .rejectedWith('"john.doe" is not a valid enail')
+    })
+
+    it('Should fail to create an user with an empty name', async () => {
+        const user = {
+            name: '   ',
+            email: 'john.doe@gmail.com',
+            password: 'secret123456'
+        }
+
+        const creation = client.call('createUser', user)
+        
+        await expect(creation).to.be.rejectedWith('The user name is empty')
     })
 })

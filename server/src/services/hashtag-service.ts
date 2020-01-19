@@ -10,7 +10,7 @@ export default class HashtagService {
     private readonly repository: Repository<Hashtag>
 
     normalize(prettyName: string) {
-        return prettyName.toLowerCase().replace(/[#| ]/g, '')
+        return prettyName.toLowerCase().replace(/[#|\s]/g, '')
     }
 
     async getAllActive(): Promise<Array<{ name: string }>> {

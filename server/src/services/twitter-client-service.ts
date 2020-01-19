@@ -3,6 +3,7 @@ import config from '../config'
 import Container from 'typedi'
 import Twit from 'twit'
 import { FakeTwitterClient } from '../util/fake-twitter-client'
+import log from '../logger'
 
 export type Stream = EventEmitter & { stop(): void; }
 export type Options = { track: string[] }
@@ -14,7 +15,7 @@ export interface TwitterClient {
 const { twitter } = config
 
 if (twitter.kind === 'enabled') {
-    console.log('Credentials present, using the real Twitter API')
+    log.info('Credentials present, using the real Twitter API')
     Container.set('TwitterClient', 
         new Twit({
             consumer_key: twitter.consumerKey,
@@ -23,6 +24,6 @@ if (twitter.kind === 'enabled') {
             access_token_secret: twitter.accessTokenSecret
         }))
 } else {
-    console.log('No credentials specified, using a mocked Twitter client')
+    log.info('No credentials specified, using a mocked Twitter client')
     Container.set('TwitterClient', new FakeTwitterClient())
 }

@@ -22,10 +22,16 @@ class User {
 
 @ArgsType()
 export class UserCreation {
-    @Field() name: string
-    @Field() email: string
-    @Field() password: string
+    @Field()
+    name: string
+    
+    @Field()
+    email: string
+    
+    @Field()
+    password: string
 }
+
 
 export class UserResolver {
 

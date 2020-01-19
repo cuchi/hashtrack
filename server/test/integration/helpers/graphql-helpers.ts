@@ -1,6 +1,6 @@
 import { createTestClient, ApolloServerTestClient } from "apollo-server-testing"
 import { ApolloServerBase, gql } from "apollo-server-core"
-import { schema } from '../../src/graphql'
+import { schema, contextHandler } from '../../../src/graphql'
 
 const api = gql`
     mutation createUser($name: String!, $email: String!, $password: String!) {
@@ -13,8 +13,21 @@ const api = gql`
 
     mutation createSession($email: String!, $password: String!) {
         createSession(email: $email, password: $password) {
-            token
-            createdAt
+            token createdAt
+        }
+    }
+
+    query currentUser { currentUser { id name email } }
+
+    mutation createTrack($name: String!) {
+        createTrack(hashtag: $name) {
+            hashtagName prettyName createdAt
+        }
+    }
+
+    mutation removeTrack($name: String!) {
+        removeTrack(hashtag: $name) {
+            hashtagName prettyName createdAt
         }
     }
 `
@@ -27,7 +40,7 @@ export function createClient(authToken?: string) {
     const client = createTestClient(
         new ApolloServerBase({
             schema,
-            context: () => ({ ctx: { req: { headers } } })
+            context: () => contextHandler({ ctx: { headers } })
         })
     )
 
