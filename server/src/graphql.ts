@@ -7,6 +7,7 @@ import Koa, { Context } from 'koa'
 import { Container } from 'typedi'
 import SessionService from "./services/session-service"
 import { Session } from "./models/session"
+import { TweetResolver } from "./resolvers/tweet-resolver"
 
 export type AuthorizedContext = Context & {
     session: Session
@@ -27,7 +28,7 @@ function authChecker(resolverData: ResolverData<Context>) {
 }
 
 export const schema = buildSchemaSync({
-    resolvers: [SessionResolver, UserResolver, TrackResolver],
+    resolvers: [SessionResolver, UserResolver, TrackResolver, TweetResolver],
     container: Container,
     authChecker
 })

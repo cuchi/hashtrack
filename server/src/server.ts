@@ -19,9 +19,15 @@ app.use(async ctx => {
 
 async function run() {
     await dbConnection
-    await Container.get(TweetService).refreshStream()
+    const tweetService = Container.get(TweetService)
+    await tweetService.refreshStream()
     app.listen(config.port)
     console.log(`Listening on port ${config.port}`)
+
+    setInterval(async () => {
+        console.log('Refreshing the tweet stream...')
+        await tweetService.refreshStream()
+    }, config.twitter.refreshInterval * 1000)
 }
 
 run().catch(error => {

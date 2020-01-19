@@ -4,8 +4,11 @@ import Container from 'typedi'
 import Twit from 'twit'
 import { FakeTwitterClient } from '../util/fake-twitter-client'
 
+export type Stream = EventEmitter & { stop(): void; }
+export type Options = { track: string[] }
+
 export interface TwitterClient {
-    stream(route: string, options: { track: string[] }): EventEmitter
+    stream(route: string, options: Options): Stream
 }
 
 const { twitter } = config

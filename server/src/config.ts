@@ -40,5 +40,8 @@ export default {
         port: Number(env.PGPORT) || 5432,
         synchronize: !isProd || Boolean(env.FORCE_SYNC)
     },
-    twitter: getTwitterConfig()
+    twitter: { 
+        ...getTwitterConfig(),
+        refreshInterval: Number(env.TWITTER_STREAM_REFRESH_INTERVAL) || 20
+    }
 }

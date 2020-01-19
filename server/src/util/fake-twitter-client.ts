@@ -1,17 +1,20 @@
 import EventEmitter from 'events'
+import {
+    TwitterClient,
+    Options,
+    Stream
+} from '../services/twitter-client-service'
 
-type Options = { track: string[] }
-
-export class FakeTwitterClient {
+export class FakeTwitterClient implements TwitterClient {
     
     public currentRoute?: string
     public currentOptions?: Options
-    public currentStream?: EventEmitter
+    public currentStream?: Stream
 
     stream(route: string, options: Options) {
         this.currentRoute = route
         this.currentOptions = options
-        this.currentStream = new EventEmitter()
+        this.currentStream = Object.assign(new EventEmitter(), { stop() {} })
         return this.currentStream
     }
 

@@ -42,7 +42,7 @@ export class TrackResolver {
         return this.service.remove(context, hashtag)
     }
 
-    @Query(_ => Track)
+    @Query(_ => [Track])
     @Authorized()
     tracks(@Ctx() context: AuthorizedContext): Promise<Track[]> {
         return this.service.get(context)

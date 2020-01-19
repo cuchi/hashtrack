@@ -3,7 +3,8 @@ import { InjectRepository } from 'typeorm-typedi-extensions'
 import { Repository } from 'typeorm'
 import { Tweet } from "../models/tweet"
 import HashtagService from './hashtag-service'
-import { TwitterClient } from "./twitter-client-service"
+import { TwitterClient, Stream } from "./twitter-client-service"
+import { AuthorizedContext } from "../graphql"
 
 type ApiTweet = {
     id_str: string
@@ -22,6 +23,7 @@ type ApiTweet = {
 @Service()
 export default class TweetService {
 
+    private activeStream?: Stream
 
     @Inject(_ => HashtagService)
     private readonly hashtags: HashtagService
@@ -33,6 +35,7 @@ export default class TweetService {
     private readonly repository: Repository<Tweet>
 
     async refreshStream() {
+        this.activeStream?.stop()
         const hashtags = await this.hashtags.getAllActive()
         const names = hashtags.map(({ name }) => `#${name}`)
 
@@ -42,9 +45,9 @@ export default class TweetService {
         }
 
         console.log(`Tracking ${names.length} hashtags...`)
-        const stream = this.client.stream('statuses/filter', { track: names })
+        this.activeStream = this.client.stream('statuses/filter', { track: names })
         
-        stream.on('tweet', async (tweet: ApiTweet) => {
+        this.activeStream.on('tweet', async (tweet: ApiTweet) => {
             console.log(`Got a tweet: ${tweet.id_str}`)
             await this.repository.save({
                 authorName: tweet.user.screen_name,
@@ -57,9 +60,26 @@ export default class TweetService {
             })
         })
 
-        stream.on('error', (error: Error) => [
+        this.activeStream.on('error', (error: Error) => [
             console.dir(error)
         ])
     }
 
+    async get(context: AuthorizedContext, hashtags: string[] = []) {
+        const { userId } = context.session
+        const query = this.repository
+            .createQueryBuilder('tweet')
+            .innerJoin('tweet.hashtags', 'hashtag')
+            .innerJoin('hashtag.tracks', 'track')
+            .where('track.userId = :userId', { userId })
+        
+        if (hashtags.length > 0) {
+            query.andWhere('hashtag.name IN (:...hashtags)', {
+                hashtags: hashtags.map(name => this.hashtags.normalize(name))
+            })
+        }
+
+
+        return query.getMany()
+    }
 }
