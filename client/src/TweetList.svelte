@@ -15,7 +15,7 @@
     <EmptyStateCard>Loading...</EmptyStateCard>
 {:else if tweets.length === 0}
     <EmptyStateCard>
-        No tweets to display, try including a hashtag
+        No tweets to display, try including a new hashtag
     </EmptyStateCard>
 {:else}
     {#each tweets as tweet (tweet.id)}
