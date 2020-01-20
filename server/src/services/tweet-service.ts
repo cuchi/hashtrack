@@ -73,13 +73,14 @@ export default class TweetService {
             .innerJoin('tweet.hashtags', 'hashtag')
             .innerJoin('hashtag.tracks', 'track')
             .where('track.userId = :userId', { userId })
+            .orderBy('tweet.publishedAt', 'DESC')
+            .take(50)
         
         if (hashtags.length > 0) {
             query.andWhere('hashtag.name IN (:...hashtags)', {
                 hashtags: hashtags.map(name => this.hashtags.normalize(name))
             })
         }
-
 
         return query.getMany()
     }
