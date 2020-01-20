@@ -6,7 +6,7 @@ import { HttpLink } from "apollo-link-http"
 const cache = new InMemoryCache()
 const link = new HttpLink({
     uri: "http://localhost:8080/graphql"
-});
+})
 
 const authLink = setContext((_, { headers }) => {
     return {
@@ -35,6 +35,7 @@ const client = new ApolloClient({ cache, link: authLink.concat(link) })
 async function call(graphql, variables = {}) {
     const operation = graphql.definitions[0].operation
     const action = operation === 'mutation' ? 'mutate' : 'query'
+    await this.clearStore()
     try {
         const result = await this[action]({ [operation]: graphql, variables })
         return Object.values(result.data)[0]

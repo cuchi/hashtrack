@@ -1,5 +1,6 @@
 <script>
 	import Login from './Login.svelte'
+	import Board from './Board.svelte'
 	import { getCurrentUser } from './lib/user'
 
 	let sessionStatus = 'pending'
@@ -7,9 +8,12 @@
 
 	async function checkStatus(event) {
 		if (event) {
-			localStorage.setItem('token', event.detail.token)
+			if (!event.detail.token) {
+				localStorage.removeItem('token')
+			} else {
+				localStorage.setItem('token', event.detail.token)
+			}
 		}
-
 		try {
 			await getCurrentUser()
 			sessionStatus = 'logged-in'
@@ -23,7 +27,7 @@
 	{#if sessionStatus === 'pending'}
 		<div uk-spinner="ratio: 5" />
 	{:else if sessionStatus === 'logged-in'}
-		<h1>Logged in!</h1>
+		<Board on:sessionDestroyed={checkStatus} />
 	{:else}
 		<Login on:sessionCreated={checkStatus} />
 	{/if}
