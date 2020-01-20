@@ -44,9 +44,9 @@ This is still a **work in progress**.
     - [x] Server
     - [ ] Client
   - [x] Tweet retrieval & store (server only)
-  - [ ] Tweet listing & search
+  - [x] Tweet listing & search
     - [x] Server
-    - [ ] Client
+    - [x] Client
 
 ### Phase 3 - Improvements
 - [ ] Setup CI - Travis
