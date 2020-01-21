@@ -23,7 +23,7 @@ export default class TrackService {
 
         return this.repository.save({
             userId,
-            prettyName: name,
+            prettyName: name.startsWith('#') ? name : `#${name}`,
             hashtag: { name: hashtagName }
         })
     }

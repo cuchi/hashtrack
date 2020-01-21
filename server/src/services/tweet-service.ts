@@ -1,6 +1,6 @@
 import { Service, Inject } from "typedi"
 import { InjectRepository } from 'typeorm-typedi-extensions'
-import { Repository } from 'typeorm'
+import { Repository, Brackets } from 'typeorm'
 import { Tweet } from "../models/tweet"
 import HashtagService from './hashtag-service'
 import { TwitterClient, Stream } from "./twitter-client-service"
@@ -51,7 +51,7 @@ export default class TweetService {
         this.activeStream.on('tweet', async (tweet: ApiTweet) => {
             log.info(`Got a tweet: ${tweet.id_str}`)
             await this.repository.save({
-                authorName: tweet.user.screen_name,
+                authorName: `@${tweet.user.screen_name}`,
                 publishedAt: tweet.created_at,
                 id: tweet.id_str,
                 text: tweet.text,
@@ -66,7 +66,7 @@ export default class TweetService {
         ])
     }
 
-    async get(context: AuthorizedContext, hashtags: string[] = []) {
+    async get(context: AuthorizedContext, search?: string) {
         const { userId } = context.session
         const query = this.repository
             .createQueryBuilder('tweet')
@@ -74,12 +74,16 @@ export default class TweetService {
             .innerJoin('hashtag.tracks', 'track')
             .where('track.userId = :userId', { userId })
             .orderBy('tweet.publishedAt', 'DESC')
+            // TODO: Pagination
             .take(50)
         
-        if (hashtags.length > 0) {
-            query.andWhere('hashtag.name IN (:...hashtags)', {
-                hashtags: hashtags.map(name => this.hashtags.normalize(name))
-            })
+        if (search) {
+            query
+                .andWhere(new Brackets(qb => qb
+                    .where('tweet.text ILIKE :search')
+                    .orWhere('tweet.authorName ILIKE :search')
+                ))
+                .setParameter('search', `%${search}%`)
         }
 
         return query.getMany()

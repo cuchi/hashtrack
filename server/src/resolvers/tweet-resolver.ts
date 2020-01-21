@@ -4,7 +4,8 @@ import {
     ID,
     Ctx,
     Authorized,
-    Query
+    Query,
+    Arg
 } from "type-graphql"
 import { Inject } from "typedi"
 import { AuthorizedContext } from "../graphql"
@@ -25,7 +26,10 @@ export class TweetResolver {
 
     @Query(_ => [Tweet])
     @Authorized()
-    tweets(@Ctx() context: AuthorizedContext): Promise<Tweet[]> {
-        return this.service.get(context)
+    tweets(
+        @Ctx() context: AuthorizedContext,
+        @Arg('search', { nullable: true }) search?: string
+    ): Promise<Tweet[]> {
+        return this.service.get(context, search)
     }
 }
