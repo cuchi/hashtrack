@@ -29,6 +29,12 @@
         await removeTrack(name)
         tracks = tracks.filter(({ hashtagName }) => hashtagName !== name)
     }
+
+    async function onTrackInput({ keyCode }) {
+        if (keyCode === 13 && hashtagName) {
+            await track()
+        }
+    }
 </script>
 
 <div class="uk-margin" uk-margin>
@@ -36,9 +42,10 @@
         class="uk-input uk-form-width-medium" 
         placeholder="{selectedSuggestion}"
         type="text"
+        on:keyup={onTrackInput}
         bind:value={hashtagName}>
     <button 
-        class="uk-button uk-button-default"
+        class="uk-button uk-button-primary"
         on:click={track}
         disabled={!hashtagName}>
         Track

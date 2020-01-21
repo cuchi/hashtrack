@@ -1,15 +1,32 @@
 <script>
     import TweetCard from './TweetCard.svelte'
+    import SearchIcon from './icons/SearchIcon.svelte'
     import EmptyStateCard from './EmptyStateCard.svelte'
     import { getTweets } from './lib/tweet'
 
     let tweets
+    let debounce
+    let search = ''
+
     refreshTweets()
 
     async function refreshTweets() {
-        tweets = await getTweets()
+        tweets = await getTweets(search)
+    }
+
+    async function searchTweets() {
+        clearTimeout(debounce)
+        debounce = setTimeout(() => { refreshTweets() }, 1000)
     }
 </script>
+
+<div class="uk-margin uk-inline">
+    <SearchIcon />
+    <input
+        class="uk-input uk-form-width-medium"
+        bind:value={search}
+        on:input={searchTweets}/>
+</div>
 
 {#if !tweets}
     <EmptyStateCard>Loading...</EmptyStateCard>

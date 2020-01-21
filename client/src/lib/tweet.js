@@ -3,8 +3,8 @@ import gql from 'graphql-tag'
 
 const graphql = {
     tweets: gql`
-        query tweets {
-            tweets {
+        query tweets($search: String!) {
+            tweets(search: $search) {
                 id
                 authorName
                 text
@@ -14,6 +14,6 @@ const graphql = {
     `
 }
 
-export async function getTweets() {
-    return client.call(graphql.tweets)
+export async function getTweets(search) {
+    return client.call(graphql.tweets, { search })
 }

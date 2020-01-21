@@ -23,12 +23,20 @@
 	}
 </script>
 
-<main class="uk-flex uk-flex-center uk-flex-middle uk-background-muted uk-height-viewport">
-	{#if sessionStatus === 'pending'}
+{#if sessionStatus === 'pending'}
+	<main 
+		class="uk-flex uk-flex-center uk-flex-middle uk-background-muted uk-height-viewport">
 		<div uk-spinner="ratio: 5" />
-	{:else if sessionStatus === 'logged-in'}
+	</main>
+{:else if sessionStatus === 'logged-in'}
+	<main 
+		class="uk-flex uk-flex-center uk-background-muted uk-height-viewport">
 		<Board on:sessionDestroyed={checkStatus} />
-	{:else}
+	</main>
+{:else}
+	<main 
+		class="uk-flex uk-flex-center uk-flex-middle uk-background-muted uk-height-viewport">
 		<Login on:sessionCreated={checkStatus} />
-	{/if}
-</main>
+	</main>
+{/if}
+
