@@ -2,6 +2,8 @@
     import EmptyStateCard from './EmptyStateCard.svelte'
     import { getTracks, createTrack, removeTrack } from './lib/track'
 
+    const enterKey = 13
+
     let tracks
     let hashtagName
     refreshTracks()
@@ -31,7 +33,7 @@
     }
 
     async function onTrackInput({ keyCode }) {
-        if (keyCode === 13 && hashtagName) {
+        if (keyCode === enterKey && hashtagName) {
             await track()
         }
     }
