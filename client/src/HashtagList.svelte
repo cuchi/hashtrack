@@ -1,6 +1,6 @@
 <script>
     import EmptyStateCard from './EmptyStateCard.svelte'
-    import { getTracks, createTrack } from './lib/track'
+    import { getTracks, createTrack, removeTrack } from './lib/track'
 
     let tracks
     let hashtagName
@@ -8,7 +8,7 @@
 
     const suggestions = [
         '#Svelte', '#NodeJs', '#TypeScript', '#Terraform', '#NPM', '#RollupJS',
-        '@FullStack', '#PostgreSQL'
+        '#FullStack', '#PostgreSQL'
     ]
     const selectedSuggestion = suggestions[
         Math.floor(Math.random() * suggestions.length)
@@ -19,8 +19,15 @@
     }
 
     async function track() {
-        const createdtrack = await createTrack(hashtagName)
-        // Insert ordered into tracks
+        const name = hashtagName
+        hashtagName = ''
+        const createdTrack = await createTrack(name)
+        tracks = [...tracks, createdTrack]
+    }
+
+    async function untrack(name) {
+        await removeTrack(name)
+        tracks = tracks.filter(({ hashtagName }) => hashtagName !== name)
     }
 </script>
 
@@ -45,7 +52,25 @@
         You are not tracking any hashtags at the moment...
     </EmptyStateCard>
 {:else}
-    {#each tracks as track (track.hashtagName)}
-        {track.hashtagName}
-    {/each}
+    <div class="uk-flex uk-flex-wrap uk-flex-wrap-around">
+        {#each tracks as track (track.hashtagName)}
+            <div 
+                class="uk-card uk-card-default uk-card-body uk-card-small card"
+                on:click={() => untrack(track.hashtagName)}>
+                {track.prettyName}
+            </div>
+        {/each}
+    </div>
 {/if}
+
+<style>
+    .card {
+        margin: 0.1em;
+    }
+    .card:hover {
+        text-decoration: line-through;
+        opacity: 0.5;
+        transition: opacity 0.1s ease-in-out;
+        cursor: pointer;
+    }
+</style>

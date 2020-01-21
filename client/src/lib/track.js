@@ -10,6 +10,26 @@ const graphql = {
                 createdAt
             }
         }
+    `,
+
+    createTrack: gql`
+        mutation createTrack($name: String!) {
+            createTrack(hashtag: $name) {
+                hashtagName,
+                prettyName,
+                createdAt
+            }
+        }
+    `,
+
+    removeTrack: gql`
+        mutation removeTrack($name: String!) {
+            removeTrack(hashtag: $name) {
+                hashtagName,
+                prettyName,
+                createdAt
+            }
+        }
     `
 }
 
@@ -18,5 +38,9 @@ export async function getTracks() {
 }
 
 export async function createTrack(name) {
-    
+    return client.call(graphql.createTrack, { name })
+}
+
+export async function removeTrack(name) {
+    return client.call(graphql.removeTrack, { name })
 }

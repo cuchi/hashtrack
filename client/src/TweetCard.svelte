@@ -1,16 +1,16 @@
 <script>
-    import { formatRelative } from 'date-fns'
+    import { format } from 'timeago.js'
 
     export let id
     export let text
     export let authorName
     export let publishedAt
 
-    let relativeDate = formatRelative(new Date(publishedAt), new Date())
+    let relativeDate = format(new Date(publishedAt), 'en_US')
 
     setInterval(() => {
-        relativeDate = formatRelative(new Date(publishedAt), new Date())
-    }, 10000);
+        relativeDate = format(new Date(publishedAt), 'en_US')
+    }, 1000);
 
     function open() {
         window.open(`https://twitter.com/${authorName}/status/${id}`, '_blank')
@@ -22,6 +22,6 @@
     on:click={open}>
     <p>
         <b>@{authorName}</b> 
-        - {text} <span class="uk-badge">{relativeDate}</span>
+        - {text} <span class="uk-text-muted">{relativeDate}</span>
     </p>
 </div>
