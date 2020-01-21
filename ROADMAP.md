@@ -36,14 +36,14 @@
   - [x] Tweet listing
     - [x] Server
     - [x] Client
-  - [ ] Tweet search
-    - [ ] Server
-    - [ ] Client
+  - [x] Tweet search
+    - [x] Server
+    - [x] Client
     
 
 ### Phase 3 - Improvements
-- [ ] Fix the top menu from moving on when changing screens
-- [ ] When user adds a new hashtag, improve the feedback by getting some tweets
+- [x] Fix the top menu from moving on when changing screens
+- [ ] When user adds a new hashtag, improve the feedback by fetching some tweets
 - [ ] Make enter key work on inputs
 - [ ] Use GraphQL subscriptions (websockets) to push new tweets to the browser
 - [ ] Setup CI - Travis
