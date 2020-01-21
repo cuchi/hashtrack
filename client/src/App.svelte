@@ -8,11 +8,7 @@
 
 	async function checkStatus(event) {
 		if (event) {
-			if (!event.detail.token) {
-				localStorage.removeItem('token')
-			} else {
-				localStorage.setItem('token', event.detail.token)
-			}
+			localStorage.setItem('token', event.detail.token)
 		}
 		try {
 			await getCurrentUser()
@@ -20,6 +16,11 @@
 		} catch(error) {
 			sessionStatus = 'logged-out'
 		}
+	}
+
+	function logout() {
+		localStorage.removeItem('token')
+		sessionStatus = 'logged-out'
 	}
 </script>
 

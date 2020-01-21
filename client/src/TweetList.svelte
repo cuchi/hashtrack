@@ -16,7 +16,7 @@
 
     async function searchTweets() {
         clearTimeout(debounce)
-        debounce = setTimeout(() => { refreshTweets() }, 1000)
+        debounce = setTimeout(() => { refreshTweets() }, 500)
     }
 </script>
 
