@@ -1,7 +1,8 @@
 # Hashtrack
 
+Hashtrack is a web application that tracks Twitter hashtags.
 <div align="center">
-      <img src="./screenshot.png">
+  <img src="./screenshot.png">
 </div>
 
 <hr/>
