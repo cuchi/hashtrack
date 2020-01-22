@@ -15,9 +15,9 @@
 
 ### Phase 2 - MVP
 - [ ] Setup linting & code style - ESLint and/or Prettier
-- [ ] Setup infrastructure - Terraform
+- [x] Setup infrastructure - Terraform
   - [x] Application
-  - [ ] Database
+  - [x] Database
 - [x] Setup server-side logging
 - [x] Core business rules
   - [x] User creation
@@ -39,7 +39,8 @@
   - [x] Tweet search
     - [x] Server
     - [x] Client
-    
+- [x] Clean the tweets periodically, so we don't exceed the 10k row limit on
+Heroku
 
 ### Phase 3 - Improvements
 - [x] Fix the top menu from moving on when changing screens
