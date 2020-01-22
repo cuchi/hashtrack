@@ -2,20 +2,40 @@ import { ApolloClient } from "apollo-client"
 import { InMemoryCache } from "apollo-cache-inmemory"
 import { setContext } from 'apollo-link-context'
 import { HttpLink } from "apollo-link-http"
+import { WebSocketLink } from 'apollo-link-ws'
+import { getMainDefinition } from 'apollo-utilities'
 
 const cache = new InMemoryCache()
-const link = new HttpLink({
+const httpLink = new HttpLink({
     uri: "http://localhost:8080/graphql"
+})
+const wsLink = new WebSocketLink({
+    uri: `ws://localhost:8080/graphql`,
+    options: {
+        reconnect: true
+    }
 })
 
 const authLink = setContext((_, { headers }) => {
     return {
         headers: {
             ...headers,
-            authorization: localStorage.getItem('token')
+            Authorization: localStorage.getItem('token')
         }
     }
 })
+
+const link = split(
+    ({ query }) => {
+        const definition = getMainDefinition(query);
+        return (
+            definition.kind === 'OperationDefinition' &&
+            definition.operation === 'subscription'
+        )
+    },
+    wsLink,
+    httpLink,
+)
 
 function handleErrorMessage(error) {
     const { graphQLErrors, networkError } = error

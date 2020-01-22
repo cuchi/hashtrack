@@ -10,7 +10,7 @@
 
     setInterval(() => {
         relativeDate = format(new Date(publishedAt), 'en_US')
-    }, 1000);
+    }, 10000);
 
     function open() {
         window.open(`https://twitter.com/${authorName}/status/${id}`, '_blank')
