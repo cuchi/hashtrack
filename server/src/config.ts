@@ -57,6 +57,7 @@ export default {
     },
     twitter: { 
         ...getTwitterConfig(),
-        refreshInterval: Number(env.TWITTER_STREAM_REFRESH_INTERVAL) || 20
+        refreshInterval: Number(env.TWITTER_STREAM_REFRESH_INTERVAL) || 20,
+        keepTweetAmount: Number(env.TWITTER_KEEP_TWEET_AMOUNT) || 5000 
     }
 }
