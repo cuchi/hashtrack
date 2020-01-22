@@ -6,6 +6,7 @@ import HashtagService from './hashtag-service'
 import { TwitterClient, Stream } from "./twitter-client-service"
 import { AuthorizedContext } from "../graphql"
 import log from "../logger"
+import config from "../config"
 
 type ApiTweet = {
     id_str: string
@@ -87,5 +88,27 @@ export default class TweetService {
         }
 
         return query.getMany()
+    }
+
+    async deleteOldTweets() {
+        const tweet = await this.repository
+            .createQueryBuilder('tweet')
+            .orderBy('tweet.publishedAt', 'DESC')
+            .offset(config.twitter.keepTweetAmount)
+            .limit(1)
+            .getOne()
+
+        if (!tweet) {
+            return 0
+        }
+
+        const deletion = await this.repository
+            .createQueryBuilder('tweet')
+            .delete()
+            .where('publishedAt < :pivotDate')
+            .setParameter('pivotDate', tweet.publishedAt)
+            .execute()
+
+        return deletion.affected ?? 0
     }
 }

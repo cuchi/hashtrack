@@ -29,6 +29,13 @@ async function run() {
         log.info('Refreshing the tweet stream...')
         await tweetService.refreshStream()
     }, config.twitter.refreshInterval * 1000)
+
+    setInterval(async () => {
+        const deletedCount = await tweetService.deleteOldTweets()
+        if (deletedCount) {
+            log.info(`${deletedCount} old tweets deleted!`)
+        }
+    }, 30000)
 }
 
 run().catch(error => {
