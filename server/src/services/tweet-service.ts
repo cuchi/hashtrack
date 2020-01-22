@@ -1,6 +1,6 @@
 import { Service, Inject } from "typedi"
 import { InjectRepository } from 'typeorm-typedi-extensions'
-import { Repository, Brackets } from 'typeorm'
+import { Repository, Brackets, DeepPartial } from 'typeorm'
 import { Tweet } from "../models/tweet"
 import HashtagService from './hashtag-service'
 import { TwitterClient, Stream } from "./twitter-client-service"
@@ -55,9 +55,9 @@ export default class TweetService {
 
     async handleTweet(tweet: ApiTweet) {
         log.info(`Got a tweet: ${tweet.id_str}`)
-        const savedTweet = await this.repository.save({
+        const savedTweet = await this.persist({
             authorName: `@${tweet.user.screen_name}`,
-            publishedAt: tweet.created_at,
+            publishedAt: new Date(tweet.created_at),
             id: tweet.id_str,
             text: tweet.text,
             hashtags: tweet.entities.hashtags.map(({ text }) => ({
@@ -66,6 +66,15 @@ export default class TweetService {
         })
         await pubSub.getPublisher()
             .publish('tweet', JSON.stringify(savedTweet))
+    }
+
+    private async persist(tweet: DeepPartial<Tweet>) {
+        try {
+            return await this.repository.save(tweet)
+        } catch (error) {
+            log.warn('Got a duplicate tweet, skipping...')
+            return tweet
+        }
     }
 
     async get(context: AuthorizedContext, search?: string) {

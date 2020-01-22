@@ -7,11 +7,20 @@ import {
     Query,
     Arg,
     Subscription,
-    Root
+    Root,
+    ResolverFilterData
 } from "type-graphql"
-import { Inject } from "typedi"
+import Container, { Inject } from "typedi"
 import { AuthorizedContext } from "../graphql"
+import { Tweet as TweetModel } from '../models/tweet'
 import TweetService from "../services/tweet-service"
+import TrackService from "../services/track-service"
+
+type TweetSubscription = ResolverFilterData<
+    TweetModel, 
+    string, 
+    AuthorizedContext
+>
 
 @ObjectType()
 class Tweet {
@@ -35,7 +44,13 @@ export class TweetResolver {
         return this.service.get(context, search)
     }
 
-    @Subscription(_ => Tweet, { topics: 'tweet' })
+    @Subscription(_ => Tweet, { topics: 
+        'tweet', 
+        filter: (data: TweetSubscription) => {
+            return Container.get(TrackService)
+                .hasVisibility(data.context, data.payload.hashtags)
+        }
+    })
     @Authorized()
     newTweet(@Root() tweet: Tweet) {
         return tweet
