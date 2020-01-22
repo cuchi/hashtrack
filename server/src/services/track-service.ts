@@ -4,6 +4,7 @@ import { Repository } from 'typeorm'
 import { Track } from "../models/track"
 import { AuthorizedContext } from "../graphql"
 import HashtagService from "./hashtag-service"
+import { Hashtag } from "../models/hashtag"
 
 @Service()
 export default class TrackService {
@@ -43,5 +44,18 @@ export default class TrackService {
     async get(context: AuthorizedContext) {
         const { userId } = context.session
         return this.repository.find({ userId })
+    }
+
+    async hasVisibility(context: AuthorizedContext, hashtags: Hashtag[]) {
+        const names = new Set(hashtags.map(({ name }) => name))
+        const userHashtags = await this.get(context)
+
+        for (const { hashtagName } of userHashtags) {
+            if (names.has(hashtagName)) {
+                return true
+            }
+        }
+
+        return false
     }
 }
