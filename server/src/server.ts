@@ -2,7 +2,7 @@ import "reflect-metadata"
 import Koa from 'koa'
 import cors from '@koa/cors'
 import config from './config'
-import { applyGraphql, applySubscriptions } from './graphql'
+import { initGraphqlServer } from './graphql'
 import dbConnection from './database'
 import Container from "typedi"
 import TweetService from "./services/tweet-service"
@@ -15,11 +15,11 @@ app.use(cors())
 async function run() {
     await dbConnection
     const tweetService = Container.get(TweetService)
-    await tweetService.refreshStream()
-    const httpServer = app.listen(config.port)
-    applyGraphql(app)
-    applySubscriptions(httpServer)
+    const http = app.listen(config.port)
+    await initGraphqlServer(app, http)
     log.info(`Listening on port ${config.port}`)
+
+    await tweetService.refreshStream()
 
     setInterval(async () => {
         log.info('Refreshing the tweet stream...')

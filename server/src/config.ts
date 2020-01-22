@@ -48,12 +48,12 @@ export default {
     port: Number(env.PORT) || 8080,
     logLevel: getLogLevel(),
     db: {
-        username: env.PGUSER || 'postgres',
-        password: env.PGPASSWORD ?? '123456',
-        database: env.PGDATABASE || 'postgres',
-        host: env.PGHOST || 'localhost',
-        port: Number(env.PGPORT) || 5432,
+        url: env.POSTGRES_URL 
+            || 'postgres://postgres:123456@localhost:5432/postgres',
         synchronize: !isProd || Boolean(env.FORCE_SYNC)
+    },
+    redis: {
+        url: env.REDIS_URL || 'redis://localhost:6379'
     },
     twitter: { 
         ...getTwitterConfig(),
