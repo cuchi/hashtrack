@@ -7,6 +7,7 @@ import { TwitterClient, Stream } from "./twitter-client-service"
 import { AuthorizedContext } from "../graphql"
 import log from "../logger"
 import config from "../config"
+import pubSub from '../pub-sub'
 
 type ApiTweet = {
     id_str: string
@@ -49,22 +50,22 @@ export default class TweetService {
         log.info(`Tracking ${names.length} hashtags...`)
         this.activeStream = this.client.stream('statuses/filter', { track: names })
         
-        this.activeStream.on('tweet', async (tweet: ApiTweet) => {
-            log.info(`Got a tweet: ${tweet.id_str}`)
-            await this.repository.save({
-                authorName: `@${tweet.user.screen_name}`,
-                publishedAt: tweet.created_at,
-                id: tweet.id_str,
-                text: tweet.text,
-                hashtags: tweet.entities.hashtags.map(({ text }) => ({
-                    name: this.hashtags.normalize(text)
-                }))
-            })
-        })
+        this.activeStream.on('tweet', this.handleTweet.bind(this))
+    }
 
-        this.activeStream.on('error', (error: Error) => [
-            console.dir(error)
-        ])
+    async handleTweet(tweet: ApiTweet) {
+        log.info(`Got a tweet: ${tweet.id_str}`)
+        const savedTweet = await this.repository.save({
+            authorName: `@${tweet.user.screen_name}`,
+            publishedAt: tweet.created_at,
+            id: tweet.id_str,
+            text: tweet.text,
+            hashtags: tweet.entities.hashtags.map(({ text }) => ({
+                name: this.hashtags.normalize(text)
+            }))
+        })
+        await pubSub.getPublisher()
+            .publish('tweet', JSON.stringify(savedTweet))
     }
 
     async get(context: AuthorizedContext, search?: string) {

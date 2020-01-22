@@ -15,6 +15,9 @@
     "date-fns": "2.9.0",
     "dotenv": "8.2.0",
     "graphql": "14.5.8",
+    "graphql-redis-subscriptions": "2.1.2",
+    "graphql-subscriptions": "1.1.0",
+    "ioredis": "4.14.1",
     "koa": "2.11.0",
     "patch-package": "6.2.0",
     "pg": "7.17.1",
@@ -33,6 +36,7 @@
     "@types/chai-as-promised": "7.1.2",
     "@types/faker": "4.1.9",
     "@types/graphql": "14.5.0",
+    "@types/ioredis": "4.14.4",
     "@types/koa": "2.11.0",
     "@types/mocha": "5.2.7",
     "@types/twit": "2.2.23",
@@ -48,6 +52,7 @@
   "scripts": {
     "build": "tsc",
     "dev": "ts-node-dev --respawn --transpileOnly src/server.ts",
+    "dev:up": "docker-compose up -d",
     "test": "NODE_ENV=test mocha --exit -r ts-node/register/transpile-only -file test/suite.ts test/integration/**",
     "postinstall": "patch-package"
   }
