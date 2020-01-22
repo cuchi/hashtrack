@@ -1,4 +1,4 @@
-import { buildSchemaSync, ResolverData } from "type-graphql"
+import { ResolverData, buildSchema } from "type-graphql"
 import { UserResolver } from "./resolvers/user-resolver"
 import { SessionResolver } from "./resolvers/session-resolver"
 import { TrackResolver } from "./resolvers/track-resolver"
@@ -8,7 +8,7 @@ import { Container } from 'typedi'
 import SessionService from "./services/session-service"
 import { Session } from "./models/session"
 import { TweetResolver } from "./resolvers/tweet-resolver"
-import pubSub from "./pub-sub"
+import redisPubSub from "./pub-sub"
 import { Server } from 'http'
 
 type RequestContext = {
@@ -54,20 +54,25 @@ function authChecker(resolverData: ResolverData<Context>) {
     return resolverData.context.session !== undefined
 }
 
-export const schema = buildSchemaSync({
-    resolvers: [SessionResolver, UserResolver, TrackResolver, TweetResolver],
-    container: Container,
-    authChecker,
-    pubSub
-})
-
-export const server = new ApolloServer({ schema, context: contextHandler })
-
-export function applyGraphql(app: Koa) {
-    server.applyMiddleware({ app, path: '/graphql' })
+export async function createSchema() {
+    const pubSub = await redisPubSub
+    
+    return buildSchema({
+        resolvers: [SessionResolver, UserResolver, TrackResolver, TweetResolver],
+        container: Container,
+        authChecker,
+        pubSub
+    })
 }
 
-export function applySubscriptions(httpServer: Server) {
-    server.installSubscriptionHandlers(httpServer)
+export async function initGraphqlServer(app: Koa, http: Server) {
+    const server = new ApolloServer({ 
+        schema: await createSchema(), 
+        context: contextHandler
+    })
+    server.applyMiddleware({ app, path: '/graphql' })
+    server.installSubscriptionHandlers(http)
+
+    return server
 }
 
