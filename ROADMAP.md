@@ -41,12 +41,13 @@
     - [x] Client
 - [x] Clean the tweets periodically, so we don't exceed the 10k row limit on
 Heroku
+- [ ] Add development & setup guide
 
 ### Phase 3 - Improvements
 - [x] Fix the top menu from moving on when changing screens
+- [x] Use GraphQL subscriptions (websockets) to push new tweets to the browser
+- [x] Make enter key work when including a track
 - [ ] When user adds a new hashtag, improve the feedback by fetching some tweets
-- [ ] Make enter key work on inputs
-- [ ] Use GraphQL subscriptions (websockets) to push new tweets to the browser
 - [ ] Setup CI - Travis
 - [ ] Setup deploy - Github Actions
 - [ ] User self deletion
