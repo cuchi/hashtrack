@@ -15,6 +15,7 @@ import { AuthorizedContext } from "../graphql"
 import { Tweet as TweetModel } from '../models/tweet'
 import TweetService from "../services/tweet-service"
 import TrackService from "../services/track-service"
+import log from "../logger"
 
 type TweetSubscription = ResolverFilterData<
     TweetModel, 
@@ -29,6 +30,8 @@ class Tweet {
     @Field() publishedAt: Date
     @Field() text: string
 }
+
+type UnserializedTweet = Tweet & { publishedAt: string }
 
 export class TweetResolver {
 
@@ -52,7 +55,8 @@ export class TweetResolver {
         }
     })
     @Authorized()
-    newTweet(@Root() tweet: Tweet) {
-        return tweet
+    newTweet(@Root() tweet: UnserializedTweet) {
+        log.info('Streaming tweet')
+        return { ...tweet, publishedAt: new Date(tweet.publishedAt) }
     }
 }
