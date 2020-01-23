@@ -11,9 +11,25 @@ const graphql = {
                 publishedAt
             }
         }
+    `,
+
+    newTweets: gql`
+        subscription newTweet {
+            newTweet {
+                id
+                authorName
+                text
+                publishedAt
+            }
+        }
     `
 }
 
 export async function getTweets(search) {
     return client.call(graphql.tweets, { search })
+}
+
+export async function listenTweets(listener) {
+    return client.subscribe(graphql.newTweets, {}, data =>
+        listener(data.newTweet))
 }
