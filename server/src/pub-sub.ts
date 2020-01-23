@@ -1,10 +1,13 @@
 import { RedisPubSub } from "graphql-redis-subscriptions"
-import redis from "./redis"
+import { connect } from "./redis"
+
+export const publisherConnection = connect()
+export const subscriberConnection = connect()
 
 async function createPubSub() {
     return new RedisPubSub({
-        publisher: await redis,
-        subscriber: await redis
+        publisher: await publisherConnection,
+        subscriber: await subscriberConnection
     })
 }
 

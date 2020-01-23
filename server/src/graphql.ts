@@ -68,7 +68,12 @@ export async function createSchema() {
 export async function initGraphqlServer(app: Koa, http: Server) {
     const server = new ApolloServer({ 
         schema: await createSchema(), 
-        context: contextHandler
+        context: contextHandler,
+        subscriptions: {
+            onConnect(params) {
+                return params
+            }
+        }
     })
     server.applyMiddleware({ app, path: '/graphql' })
     server.installSubscriptionHandlers(http)

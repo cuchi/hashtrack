@@ -7,7 +7,7 @@ import { TwitterClient, Stream } from "./twitter-client-service"
 import { AuthorizedContext } from "../graphql"
 import log from "../logger"
 import config from "../config"
-import pubSub from '../pub-sub'
+import { publisherConnection } from '../pub-sub'
 
 type ApiTweet = {
     id_str: string
@@ -64,8 +64,8 @@ export default class TweetService {
                 name: this.hashtags.normalize(text)
             }))
         })
-        await pubSub.getPublisher()
-            .publish('tweet', JSON.stringify(savedTweet))
+        const publisher = await publisherConnection
+        await publisher.publish('tweet', JSON.stringify(savedTweet))
     }
 
     private async persist(tweet: DeepPartial<Tweet>) {
