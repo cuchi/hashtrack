@@ -2,8 +2,11 @@
     import TweetCard from './TweetCard.svelte'
     import SearchIcon from './icons/SearchIcon.svelte'
     import EmptyStateCard from './EmptyStateCard.svelte'
-    import { getTweets } from './lib/tweet'
-
+    import { getTweets, listenTweets } from './lib/tweet'
+    import { tweetSubscriber } from './stores.js'
+    
+    const debounceTimeout = 500
+    const maxListSize = 50
     let tweets
     let debounce
     let search = ''
@@ -12,11 +15,22 @@
 
     async function refreshTweets() {
         tweets = await getTweets(search)
+        tweetSubscriber.update(refreshSubscriber)
+    }
+
+    async function refreshSubscriber(oldSubscriber) {
+        const subscriber = await oldSubscriber
+        if (subscriber) {
+            subscriber.unsubscribe()
+        }
+        return listenTweets(tweet => {
+            tweets = [tweet, ...tweets].slice(0, maxListSize)
+        })
     }
 
     async function searchTweets() {
         clearTimeout(debounce)
-        debounce = setTimeout(() => { refreshTweets() }, 500)
+        debounce = setTimeout(() => { refreshTweets() }, debounceTimeout)
     }
 </script>
 

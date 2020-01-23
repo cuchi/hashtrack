@@ -1,10 +1,14 @@
 <script>
     import { format } from './lib/timeago.js'
+    import { fade } from 'svelte/transition'
+    import he from 'he'
 
     export let id
     export let text
     export let authorName
     export let publishedAt
+
+    const decodedText = he.decode(text)
     
     let relativeDate = format(new Date(publishedAt), 'en_US')
 
@@ -18,11 +22,12 @@
 </script>
 
 <div 
+    in:fade
     class="uk-card uk-card-default uk-card-body uk-margin-bottom uk-card-hover"
     on:click={open}>
     <p>
         <b>{authorName}</b> 
-        - {text} 
+        - {decodedText} 
         <span class="uk-text-small uk-text-muted uk-text-nowrap date-hint">
             {relativeDate}
         </span>
