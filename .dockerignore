@@ -1,0 +1,8 @@
+node_modules
+infra
+Dockerfile
+.dockerignore
+.env
+*.md
+screenshot.png
+.github
