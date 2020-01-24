@@ -13,6 +13,8 @@ variable "twitter_access_token_secret" {}
 resource "heroku_app" "hashtrack" {
   name   = var.heroku_app_name
   region = "us"
+  stack  = "container"
+
   sensitive_config_vars = {
     TWITTER_CONSUMER_KEY        = var.twitter_consumer_key
     TWITTER_CONSUMER_SECRET     = var.twitter_consumer_secret
