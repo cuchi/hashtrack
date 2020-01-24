@@ -1,6 +1,6 @@
 import { describe, it, beforeEach } from "mocha"
 import { expect } from 'chai'
-import { createClient } from "./helpers/graphql-helpers"
+import { createClient, Client } from "./helpers/graphql-helpers"
 import { UserFactory } from "./factories/user-factory"
 import { resetDatabase, count, getAll } from "./helpers/db-helpers"
 import { TweetFactory } from "./factories/tweet-factory"
@@ -8,9 +8,15 @@ import TweetService from "../../src/services/tweet-service"
 import Container from "typedi"
 
 describe('Tweets', () => {
-    const client = createClient()
-    const userFactory = new UserFactory(client)
-    const tweetFactory = new TweetFactory()
+    let client: Client
+    let userFactory: UserFactory
+    let tweetFactory: TweetFactory
+
+    before(async () => {
+        client = await createClient()
+        userFactory = new UserFactory(client)
+        tweetFactory = new TweetFactory()
+    })
 
     beforeEach(resetDatabase)
 

@@ -1,6 +1,9 @@
 import { createTestClient, ApolloServerTestClient } from "apollo-server-testing"
 import { ApolloServerBase, gql } from "apollo-server-core"
-import { schema, contextHandler } from '../../../src/graphql'
+import { createSchema, contextHandler } from '../../../src/graphql'
+
+type PromiseType<T> = T extends Promise<infer U> ? U : never
+export type Client = PromiseType<ReturnType<typeof createClient>>
 
 const api = gql`
     mutation createUser($name: String!, $email: String!, $password: String!) {
@@ -32,14 +35,14 @@ const api = gql`
     }
 `
 
-export function createClient(authToken?: string) {
+export async function createClient(authToken?: string) {
     const headers = {
         authorization: authToken
     }
 
     const client = createTestClient(
         new ApolloServerBase({
-            schema,
+            schema: await createSchema(),
             context: () => contextHandler({ ctx: { headers } })
         })
     )

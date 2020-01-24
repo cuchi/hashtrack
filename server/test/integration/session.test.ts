@@ -1,12 +1,17 @@
 import { describe, it, beforeEach } from "mocha"
-import { createClient } from "./helpers/graphql-helpers"
+import { createClient, Client } from "./helpers/graphql-helpers"
 import { expect } from 'chai'
 import { UserFactory } from "./factories/user-factory"
 import { resetDatabase } from "./helpers/db-helpers"
 
-describe('Sessions', async () => {
-    const client = createClient()
-    const userFactory = new UserFactory(client)
+describe('Sessions', () => {
+    let client: Client
+    let userFactory: UserFactory
+
+    before(async () => {
+        client = await createClient()
+        userFactory = new UserFactory(client)
+    })
 
     beforeEach(resetDatabase)
 
@@ -36,7 +41,7 @@ describe('Sessions', async () => {
     it('Should use the generated token to create an authenticated context', async () => {
         const user = await userFactory.create()
         const { token } = await client.call('createSession', user)
-        const authenticatedClient = createClient(token)
+        const authenticatedClient = await createClient(token)
         
         const sessionUser = await authenticatedClient.call('currentUser')
 
@@ -46,7 +51,7 @@ describe('Sessions', async () => {
     })
 
     it('Should fail to create an authenticated context from an invalid token', async () => {
-        const authenticatedClient = createClient('foo')
+        const authenticatedClient = await createClient('foo')
         
         const retrieval = authenticatedClient.call('currentUser')
 
