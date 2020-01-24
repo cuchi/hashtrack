@@ -8,6 +8,8 @@ import log from '../logger'
 export type Stream = EventEmitter & { stop(): void; }
 export type Options = { track: string[] }
 
+export const twitterClientService = 'TwitterClient'
+
 export interface TwitterClient {
     stream(route: string, options: Options): Stream
 }
@@ -16,7 +18,7 @@ const { twitter } = config
 
 if (twitter.kind === 'enabled') {
     log.info('Credentials present, using the real Twitter API')
-    Container.set('TwitterClient', 
+    Container.set(twitterClientService, 
         new Twit({
             consumer_key: twitter.consumerKey,
             consumer_secret: twitter.consumerSecret,
@@ -25,5 +27,5 @@ if (twitter.kind === 'enabled') {
         }))
 } else {
     log.info('No credentials specified, using a mocked Twitter client')
-    Container.set('TwitterClient', new FakeTwitterClient())
+    Container.set(twitterClientService, new FakeTwitterClient())
 }
