@@ -30,10 +30,10 @@ export default {
 
 		copy({
 			targets: [{ 
-				src: 'node_modules/uikit/dist/css/uikit.min.css',
+				src: '../node_modules/uikit/dist/css/uikit.min.css',
 				dest: 'public/build'
 			}, { 
-				src: 'node_modules/uikit/dist/js/uikit.min.js',
+				src: '../node_modules/uikit/dist/js/uikit.min.js',
 				dest: 'public/build'
 			}]
 		}),
