@@ -53,6 +53,7 @@
     "build": "tsc",
     "dev": "ts-node-dev --respawn --transpileOnly src/server.ts",
     "dev:up": "docker-compose up -d",
+    "dev:down": "docker-compose down",
     "test": "NODE_ENV=test mocha --exit -r ts-node/register/transpile-only -file test/suite.ts test/integration/**"
   }
 }
