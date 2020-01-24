@@ -19,6 +19,11 @@ resource "heroku_app" "hashtrack" {
     TWITTER_ACCESS_TOKEN        = var.twitter_access_token
     TWITTER_ACCESS_TOKEN_SECRET = var.twitter_access_token_secret
   }
+
+  config_vars = {
+    # Migrations are not on the roadmap yet.
+    FORCE_SYNC = true
+  }
 }
 
 resource "heroku_addon" "database" {
