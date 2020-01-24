@@ -7,13 +7,14 @@ import { WebSocketLink } from 'apollo-link-ws'
 import { getMainDefinition } from 'apollo-utilities'
 
 const { host, protocol } = window.location
+const webSocketProtocol = protocol === 'https:' ? 'wss:' : 'ws:'
 
 const cache = new InMemoryCache()
 const httpLink = new HttpLink({
     uri: `${protocol}//${host}/graphql`
 })
 const wsLink = new WebSocketLink({
-    uri: `ws://${host}/graphql`,
+    uri: `${webSocketProtocol}//${host}/graphql`,
     options: {
         reconnect: true,
         lazy: true,
