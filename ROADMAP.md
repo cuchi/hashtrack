@@ -47,9 +47,9 @@ Heroku
 - [x] Fix the top menu from moving on when changing screens
 - [x] Use GraphQL subscriptions (websockets) to push new tweets to the browser
 - [x] Make enter key work when including a track
-- [ ] When user adds a new hashtag, improve the feedback by fetching some tweets
 - [x] Setup CI
-- [ ] Setup deploy
+- [X] Setup deploy
+- [ ] When user adds a new hashtag, improve the feedback by fetching some tweets
 - [ ] User self deletion
   - [ ] Server
   - [ ] Client
