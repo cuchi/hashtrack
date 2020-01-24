@@ -1,10 +1,15 @@
 import { describe, it, beforeEach } from "mocha"
-import { createClient } from "./helpers/graphql-helpers"
+import { createClient, Client } from "./helpers/graphql-helpers"
 import { expect } from 'chai'
 import { resetDatabase } from "./helpers/db-helpers"
 
-describe('Users', async () => {
-    const client = createClient()
+describe('Users', () => {
+    let client: Client
+
+    before(async () => {
+        client = await createClient()
+    })
+
 
     beforeEach(resetDatabase)
 

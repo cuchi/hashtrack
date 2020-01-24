@@ -1,12 +1,17 @@
 import { describe, it, beforeEach } from "mocha"
 import { expect } from 'chai'
-import { createClient } from "./helpers/graphql-helpers"
+import { createClient, Client } from "./helpers/graphql-helpers"
 import { UserFactory } from "./factories/user-factory"
 import { getDatabaseDate, resetDatabase } from "./helpers/db-helpers"
 
 describe('Hashtag tracks', () => {
-    const client = createClient()
-    const userFactory = new UserFactory(client)
+    let client: Client
+    let userFactory: UserFactory
+
+    before(async () => {
+        client = await createClient()
+        userFactory = new UserFactory(client)
+    })
 
     beforeEach(resetDatabase)
 
