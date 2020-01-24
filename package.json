@@ -1,10 +1,16 @@
 {
     "private": true,
     "name": "hashtrack",
-    "devDependencies": {
+    "dependencies": {
+        "patch-package": "6.2.0",
+        "postinstall-postinstall": "2.0.0"
     },
     "workspaces": [
         "client",
         "server"
-    ]
+    ],
+    "scripts": {
+        "start": "scripts/start.sh",
+        "postinstall": "patch-package"
+    }
 }

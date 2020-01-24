@@ -21,11 +21,12 @@ web application from the ground up.
 1. `yarn`
 2. `yarn start`
 
-The `start` will create all the local services needed to run it in development 
-mode. The application will be available in http://localhost:8080 by default.
+The `start` script will create all the local services needed to run it in 
+development mode. The application will be available in http://localhost:8080 by 
+default.
 
-You should create a `.env` file with your API tokens if you want to see real
-tweets.
+**You should create a `.env` file with your API and consumer tokens if you want 
+to see real tweets** (see `.env.example`).
 
 The automated tests can be run with `yarn test`, this will also wind up some
 needed local services first.
