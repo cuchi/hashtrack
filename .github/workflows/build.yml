@@ -18,7 +18,6 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: yarn
-      - run: yarn workspace hashtrack-server dev:up
-      - run: yarn workspaces run test
+      - run: yarn test
         env:
           CI: true
