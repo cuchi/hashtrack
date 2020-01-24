@@ -7,6 +7,7 @@ import dbConnection from './database'
 import Container from "typedi"
 import TweetService from "./services/tweet-service"
 import log from "./logger"
+import { initStaticFiles } from "./static"
 
 const app = new Koa()
 
@@ -17,6 +18,7 @@ async function run() {
     const tweetService = Container.get(TweetService)
     const http = app.listen(config.port)
     await initGraphqlServer(app, http)
+    await initStaticFiles(app)
     log.info(`Listening on port ${config.port}`)
 
     await tweetService.refreshStream()

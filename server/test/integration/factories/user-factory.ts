@@ -1,7 +1,5 @@
-import { createClient } from '../helpers/graphql-helpers'
+import { createClient, Client } from '../helpers/graphql-helpers'
 import faker from 'faker'
-
-type Client = ReturnType<typeof createClient>
 
 export class UserFactory {
     
