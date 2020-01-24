@@ -3,7 +3,11 @@ import { InjectRepository } from 'typeorm-typedi-extensions'
 import { Repository, Brackets, DeepPartial } from 'typeorm'
 import { Tweet } from "../models/tweet"
 import HashtagService from './hashtag-service'
-import { TwitterClient, Stream } from "./twitter-client-service"
+import {
+    TwitterClient,
+    Stream,
+    twitterClientService
+} from "./twitter-client-service"
 import { AuthorizedContext } from "../graphql"
 import log from "../logger"
 import config from "../config"
@@ -31,7 +35,7 @@ export default class TweetService {
     @Inject(_ => HashtagService)
     private readonly hashtags: HashtagService
 
-    @Inject('TwitterClient')
+    @Inject(twitterClientService)
     private readonly client: TwitterClient
 
     @InjectRepository(Tweet)
