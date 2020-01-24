@@ -51,7 +51,6 @@
   },
   "scripts": {
     "build": "tsc",
-    "start": "node build/src/server.js",
     "dev": "ts-node-dev --respawn --transpileOnly src/server.ts",
     "dev:up": "docker-compose up -d",
     "dev:down": "docker-compose down",
