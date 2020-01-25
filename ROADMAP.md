@@ -48,7 +48,9 @@ Heroku
 - [x] Use GraphQL subscriptions (websockets) to push new tweets to the browser
 - [x] Make enter key work when including a track
 - [x] Setup CI
-- [X] Setup deploy
+- [x] Setup deploy
+- [x] Keep the database usage under 10k rows, because that is the Heroku's free
+PostgreSQL plan limit
 - [ ] When user adds a new hashtag, improve the feedback by fetching some tweets
 - [ ] User self deletion
   - [ ] Server
