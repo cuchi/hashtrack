@@ -38,6 +38,11 @@ resource "heroku_addon" "cache" {
   plan = "heroku-redis:hobby-dev"
 }
 
+resource "heroku_addon" "logs" {
+  app  = heroku_app.hashtrack.name
+  plan = "papertrail:choklad"
+}
+
 output "app" {
   value = heroku_app.hashtrack
 }
