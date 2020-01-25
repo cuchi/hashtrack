@@ -25,6 +25,7 @@ resource "heroku_app" "hashtrack" {
   config_vars = {
     # Migrations are not on the roadmap yet.
     FORCE_SYNC = true
+    TWITTER_KEEP_TWEET_AMOUNT = 1500
   }
 }
 
