@@ -8,10 +8,12 @@ import {
     Stream,
     twitterClientService
 } from "./twitter-client-service"
+import { equals, intersection } from 'ramda'
 import { AuthorizedContext } from "../graphql"
 import log from "../logger"
 import config from "../config"
 import { publisherConnection } from '../pub-sub'
+
 
 type ApiTweet = {
     id_str: string
@@ -31,6 +33,7 @@ type ApiTweet = {
 export default class TweetService {
 
     private activeStream?: Stream
+    private activeHashtags?: string[]
 
     @Inject(_ => HashtagService)
     private readonly hashtags: HashtagService
@@ -43,31 +46,47 @@ export default class TweetService {
 
     async refreshStream() {
         log.info('Refreshing the tweet stream...')
-        this.activeStream?.stop()
         const hashtags = await this.hashtags.getAllActive()
-        const names = hashtags.map(({ name }) => `#${name}`)
 
-        if (names.length === 0) {
+        if (hashtags.length === 0) {
             log.info('No hashtags to track at the moment')
             return
         }
 
-        log.info(`Tracking ${names.length} hashtags...`)
-        this.activeStream = this.client.stream('statuses/filter', { track: names })
-        
-        this.activeStream.on('tweet', this.handleTweet.bind(this))
+        if (equals(hashtags, this.activeHashtags)) {
+            log.info('No hashtags were updated since the last refresh')
+            return
+        }
+
+        log.info(`Tracking ${hashtags.length} hashtags...`)
+        this.activeHashtags = hashtags
+        this.activeStream?.stop()
+        this.activeStream = this.client
+            .stream('statuses/filter', { track: hashtags.map(name => `#${name}`) })
+            .on('tweet', this.handleTweet.bind(this))
+    }
+
+    private getValidHashtags(tweet: ApiTweet) {
+        const tweetHashtags = tweet.entities.hashtags.map(({ text }) =>
+            this.hashtags.normalize(text))
+        return intersection(
+            tweetHashtags, 
+            this.activeHashtags ?? [])
     }
 
     async handleTweet(tweet: ApiTweet) {
-        log.info(`Got a tweet: ${tweet.id_str}`)
+        const hashtags = this.getValidHashtags(tweet)
+        if (!hashtags.length) {
+            return
+        }
+
+        log.info(`Got a tweet with hashtags: ${hashtags}`)
         const savedTweet = await this.persist({
             authorName: `@${tweet.user.screen_name}`,
             publishedAt: new Date(tweet.created_at),
             id: tweet.id_str,
             text: tweet.text,
-            hashtags: tweet.entities.hashtags.map(({ text }) => ({
-                name: this.hashtags.normalize(text)
-            }))
+            hashtags: hashtags.map(name => ({ name }))
         })
         const publisher = await publisherConnection
         await publisher.publish('tweet', JSON.stringify(savedTweet))

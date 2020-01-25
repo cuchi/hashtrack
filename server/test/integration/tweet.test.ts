@@ -38,6 +38,17 @@ describe('Tweets', () => {
         await tweetFactory.create(['#FOO', '#bar'])
 
         const tweets = await getAll('hashtag')
-        expect(tweets.find((hashtag: any) => hashtag.name === 'bar')).to.exist
+        expect(tweets.find((hashtag: any) => hashtag.name === 'bar')).to.not.exist
+    })
+
+    it('Should consume a tracked tweet with non-unique hashtags', async () => {
+        const client = await userFactory.createWithClient()
+        await client.call('createTrack', { name: '#foo' })
+        await Container.get(TweetService).refreshStream()
+        
+        await tweetFactory.create(['#FOO', '#foo', '#FOO'])
+
+        expect(await count('tweet')).to.be.equal(1)
+        expect(await count('hashtag')).to.be.equal(1)
     })
 })

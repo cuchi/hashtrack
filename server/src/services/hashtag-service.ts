@@ -4,6 +4,7 @@ import { Repository } from 'typeorm'
 import { Hashtag } from "../models/hashtag"
 import { Tweet } from "../models/tweet"
 import { Track } from "../models/track"
+import { pluck } from "ramda"
 
 @Service()
 export default class HashtagService {
@@ -15,11 +16,14 @@ export default class HashtagService {
         return prettyName.toLowerCase().replace(/[#|@|\s]/g, '')
     }
 
-    async getAllActive(): Promise<Array<{ name: string }>> {
-        return this.repository.createQueryBuilder('hashtag')
+    async getAllActive(): Promise<Array<string>> {
+        const results = await this.repository.createQueryBuilder('hashtag')
             .select('distinct hashtag.name')
             .innerJoin('hashtag.tracks', 'track')
+            .orderBy('hashtag.name')
             .getRawMany()
+
+        return pluck('name', results)
     }
 
     async removeUnused() {
