@@ -28,7 +28,7 @@ export class FakeTwitterClient implements TwitterClient {
             await this.sendFakeTweet(
                 faker.lorem.sentence(20), 
                 faker.internet.userName(), 
-                [hashtag.name]
+                [hashtag]
             )
         }, 5000)
     }
