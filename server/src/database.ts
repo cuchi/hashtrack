@@ -14,6 +14,7 @@ async function connect() {
     const connection = await createConnection({
         type: 'postgres', 
         ...config.db,
+        logging: ['error'],
         entities: [
             Hashtag,
             Tweet,

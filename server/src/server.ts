@@ -8,6 +8,7 @@ import Container from "typedi"
 import TweetService from "./services/tweet-service"
 import log from "./logger"
 import { initStaticFiles } from "./static"
+import CleanupService from "./services/cleanup-service"
 
 const app = new Koa()
 
@@ -23,17 +24,13 @@ async function run() {
 
     await tweetService.refreshStream()
 
-    setInterval(async () => {
-        log.info('Refreshing the tweet stream...')
-        await tweetService.refreshStream()
-    }, config.twitter.refreshInterval * 1000)
+    setInterval(() =>
+        tweetService.refreshStream(), 
+        config.twitter.refreshInterval * 1000)
 
-    setInterval(async () => {
-        const deletedCount = await tweetService.deleteOldTweets()
-        if (deletedCount) {
-            log.info(`${deletedCount} old tweets deleted!`)
-        }
-    }, 30000)
+    setInterval(() =>
+        Container.get(CleanupService).cleanup(), 
+        config.cleanupInterval * 1000)
 }
 
 run().catch(error => {

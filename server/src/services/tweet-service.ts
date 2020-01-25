@@ -42,6 +42,7 @@ export default class TweetService {
     private readonly repository: Repository<Tweet>
 
     async refreshStream() {
+        log.info('Refreshing the tweet stream...')
         this.activeStream?.stop()
         const hashtags = await this.hashtags.getAllActive()
         const names = hashtags.map(({ name }) => `#${name}`)
@@ -104,7 +105,7 @@ export default class TweetService {
         return query.getMany()
     }
 
-    async deleteOldTweets() {
+    async removeOldTweets() {
         const tweet = await this.repository
             .createQueryBuilder('tweet')
             .orderBy('tweet.publishedAt', 'DESC')

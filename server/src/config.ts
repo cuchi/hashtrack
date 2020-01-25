@@ -50,6 +50,7 @@ function getLogLevel() {
 export default {
     port: Number(env.PORT) || 8080,
     logLevel: getLogLevel(),
+    cleanupInterval: Number(env.CLEANUP_INTERVAL) || 30,
     db: {
         url: env.DATABASE_URL 
             || 'postgres://postgres:123456@localhost:5432/postgres',
