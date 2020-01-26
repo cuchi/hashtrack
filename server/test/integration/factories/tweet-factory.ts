@@ -3,7 +3,7 @@ import Container from 'typedi'
 import { FakeTwitterClient } from '../../../src/util/fake-twitter-client'
 
 export class TweetFactory {
-    
+
     private readonly client: FakeTwitterClient
 
     constructor() {

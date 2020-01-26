@@ -70,7 +70,7 @@ export default class TweetService {
         const tweetHashtags = tweet.entities.hashtags.map(({ text }) =>
             this.hashtags.normalize(text))
         return intersection(
-            tweetHashtags, 
+            tweetHashtags,
             this.activeHashtags ?? [])
     }
 
@@ -111,7 +111,7 @@ export default class TweetService {
             .orderBy('tweet.publishedAt', 'DESC')
             // TODO: Pagination
             .take(50)
-        
+
         if (search) {
             query
                 .andWhere(new Brackets(qb => qb

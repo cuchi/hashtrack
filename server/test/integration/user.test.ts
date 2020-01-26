@@ -19,7 +19,7 @@ describe('Users', () => {
             email: 'john.doe@gmail.com',
             password: 'secret123456'
         })
-        
+
         expect(createdUser).to.have.property('name').equal('John Doe')
         expect(createdUser).to.have.property('email').equal('john.doe@gmail.com')
         expect(createdUser).to.not.have.property('password')
@@ -37,7 +37,7 @@ describe('Users', () => {
 
         await client.call('createUser', user)
         const secondCreation = client.call('createUser', user)
-        
+
         await expect(secondCreation).to.be.rejectedWith(
             /duplicate key value violates unique constraint/
         )
@@ -64,7 +64,7 @@ describe('Users', () => {
         }
 
         const creation = client.call('createUser', user)
-        
+
         await expect(creation).to.be.rejectedWith('The user name is empty')
     })
 })

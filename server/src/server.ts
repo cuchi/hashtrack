@@ -25,11 +25,11 @@ async function run() {
     await tweetService.refreshStream()
 
     setInterval(() =>
-        tweetService.refreshStream(), 
+        tweetService.refreshStream(),
         config.twitter.refreshInterval * 1000)
 
     setInterval(() =>
-        Container.get(CleanupService).cleanup(), 
+        Container.get(CleanupService).cleanup(),
         config.cleanupInterval * 1000)
 }
 

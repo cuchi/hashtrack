@@ -2,7 +2,7 @@ import { createClient, Client } from '../helpers/graphql-helpers'
 import faker from 'faker'
 
 export class UserFactory {
-    
+
     private readonly client: Client
 
     constructor(client: Client) {

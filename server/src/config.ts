@@ -52,16 +52,16 @@ export default {
     logLevel: getLogLevel(),
     cleanupInterval: Number(env.CLEANUP_INTERVAL) || 30,
     db: {
-        url: env.DATABASE_URL 
+        url: env.DATABASE_URL
             || 'postgres://postgres:123456@localhost:5432/postgres',
         synchronize: !isProd || Boolean(env.FORCE_SYNC)
     },
     redis: {
         url: env.REDIS_URL || 'redis://localhost:6379'
     },
-    twitter: { 
+    twitter: {
         ...getTwitterConfig(),
         refreshInterval: Number(env.TWITTER_STREAM_REFRESH_INTERVAL) || 20,
-        keepTweetAmount: Number(env.TWITTER_KEEP_TWEET_AMOUNT) || 5000 
+        keepTweetAmount: Number(env.TWITTER_KEEP_TWEET_AMOUNT) || 5000
     }
 }

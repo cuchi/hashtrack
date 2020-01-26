@@ -32,7 +32,7 @@ export class TrackResolver {
     ): Promise<Track> {
         return this.service.create(context, hashtag)
     }
-    
+
     @Mutation(_ => Track)
     @Authorized()
     removeTrack(

@@ -18,8 +18,8 @@ import TrackService from "../services/track-service"
 import log from "../logger"
 
 type TweetSubscription = ResolverFilterData<
-    TweetModel, 
-    string, 
+    TweetModel,
+    string,
     AuthorizedContext
 >
 
@@ -47,8 +47,8 @@ export class TweetResolver {
         return this.service.get(context, search)
     }
 
-    @Subscription(_ => Tweet, { topics: 
-        'tweet', 
+    @Subscription(_ => Tweet, { topics:
+        'tweet',
         filter: (data: TweetSubscription) => {
             return Container.get(TrackService)
                 .hasVisibility(data.context, data.payload.hashtags)

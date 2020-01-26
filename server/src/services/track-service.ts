@@ -31,11 +31,11 @@ export default class TrackService {
 
     async remove(context: AuthorizedContext, name: string) {
         const { userId } = context.session
-        const existingTrack = await this.repository.findOneOrFail({ 
-            userId, 
+        const existingTrack = await this.repository.findOneOrFail({
+            userId,
             hashtagName: this.hashtags.normalize(name)
         })
-        
+
         await this.repository.remove({ ...existingTrack })
 
         return existingTrack

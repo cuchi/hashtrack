@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import { TwitterClient, Options } from '../services/twitter-client-service'
 import { format } from 'date-fns'
 import { EventEmitter } from 'typeorm/platform/PlatformTools'
@@ -7,7 +8,7 @@ import HashtagService from '../services/hashtag-service'
 import config from '../config'
 
 export class FakeTwitterClient implements TwitterClient {
-    
+
     public currentRoute?: string
     public currentOptions?: Options
     private listener?: (...args: unknown[]) => void | Promise<void>
@@ -26,8 +27,8 @@ export class FakeTwitterClient implements TwitterClient {
                 Math.floor(Math.random() * hashtags.length)
             ]
             await this.sendFakeTweet(
-                faker.lorem.sentence(20), 
-                faker.internet.userName(), 
+                faker.lorem.sentence(20),
+                faker.internet.userName(),
                 [hashtag]
             )
         }, 5000)
@@ -36,7 +37,9 @@ export class FakeTwitterClient implements TwitterClient {
     stream(route: string, options: Options) {
         this.currentRoute = route
         this.currentOptions = options
-        const fakeStream = Object.assign(new EventEmitter(), { stop() {} })
+        const fakeStream = Object.assign(new EventEmitter(), {
+            stop() {/* ignore */}
+        })
 
         fakeStream.on = (event: string, listener: (...args: unknown[]) => void) => {
             if (event === 'tweet') {
@@ -44,7 +47,7 @@ export class FakeTwitterClient implements TwitterClient {
             }
             return fakeStream
         }
-        
+
         return fakeStream
     }
 

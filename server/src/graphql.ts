@@ -56,7 +56,7 @@ function authChecker(resolverData: ResolverData<Context>) {
 
 export async function createSchema() {
     const pubSub = await redisPubSub
-    
+
     return buildSchema({
         resolvers: [SessionResolver, UserResolver, TrackResolver, TweetResolver],
         container: Container,
@@ -66,8 +66,8 @@ export async function createSchema() {
 }
 
 export async function initGraphqlServer(app: Koa, http: Server) {
-    const server = new ApolloServer({ 
-        schema: await createSchema(), 
+    const server = new ApolloServer({
+        schema: await createSchema(),
         context: contextHandler,
         subscriptions: {
             onConnect(params) {

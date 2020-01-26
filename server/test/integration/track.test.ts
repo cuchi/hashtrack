@@ -20,7 +20,7 @@ describe('Hashtag tracks', () => {
         const client = await userFactory.createWithClient()
 
         const track = await client.call('createTrack', { name: '#foo' })
-        
+
         expect(track).to.have.property('prettyName').equal('#foo')
         const createdAt = new Date(track.createdAt)
         expect(createdAt).to.be.greaterThan(before)
@@ -29,7 +29,7 @@ describe('Hashtag tracks', () => {
     it('Should normalize the hashtag name', async () => {
         const client = await userFactory.createWithClient()
 
-        const track = await client.call('createTrack', { 
+        const track = await client.call('createTrack', {
             name: '#ThisIsAPrettyHashtag'
         })
 
@@ -40,7 +40,7 @@ describe('Hashtag tracks', () => {
     it('Should remove invalid characters from a hashtag name', async () => {
         const client = await userFactory.createWithClient()
 
-        const track = await client.call('createTrack', { 
+        const track = await client.call('createTrack', {
             name: '  # foo #bar \nbaz '
         })
 
@@ -51,7 +51,7 @@ describe('Hashtag tracks', () => {
     it('Should fail to track the same hashtag twice', async () => {
         const client = await userFactory.createWithClient()
         await client.call('createTrack', { name: '#foo' })
-        
+
         const secondTrack =  client.call('createTrack', { name: '#FOO' })
 
         await expect(secondTrack).to.be.rejectedWith(/duplicate key value/)

@@ -21,7 +21,7 @@ describe('Sessions', () => {
             email: user.email,
             password: user.password
         })
-        
+
         expect(createdSession).to.have.property('token')
             .that.is.a('string')
             .with.length.greaterThan(0)
@@ -32,7 +32,7 @@ describe('Sessions', () => {
             email: 'john.doe@gmail.com',
             password: 'secret123456'
         })
-        
+
         await expect(sessionCreation).to.be.rejectedWith(
             'Wrong email or password!'
         )
@@ -42,7 +42,7 @@ describe('Sessions', () => {
         const user = await userFactory.create()
         const { token } = await client.call('createSession', user)
         const authenticatedClient = await createClient(token)
-        
+
         const sessionUser = await authenticatedClient.call('currentUser')
 
         expect(sessionUser).to.have.property('id').equal(user.id)
@@ -52,7 +52,7 @@ describe('Sessions', () => {
 
     it('Should fail to create an authenticated context from an invalid token', async () => {
         const authenticatedClient = await createClient('foo')
-        
+
         const retrieval = authenticatedClient.call('currentUser')
 
         await expect(retrieval).to.be.rejectedWith(/Access denied/)

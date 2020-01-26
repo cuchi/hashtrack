@@ -16,7 +16,7 @@ export default class UserService {
 
     @InjectRepository(User)
     private readonly repository: Repository<User>
-    
+
     get(context: AuthorizedContext) {
         return context.session.user
     }

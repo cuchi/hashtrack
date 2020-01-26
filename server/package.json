@@ -9,11 +9,14 @@
   "private": false,
   "dependencies": {
     "@koa/cors": "3.0.0",
+    "@typescript-eslint/eslint-plugin": "2.17.0",
+    "@typescript-eslint/parser": "2.17.0",
     "apollo-server-koa": "2.9.16",
     "bcrypt": "3.0.7",
     "class-validator": "0.11.0",
     "date-fns": "2.9.0",
     "dotenv": "8.2.0",
+    "eslint": "6.8.0",
     "graphql": "14.5.8",
     "graphql-redis-subscriptions": "2.1.2",
     "graphql-subscriptions": "1.1.0",
@@ -56,6 +59,7 @@
     "dev": "ts-node-dev --respawn --transpileOnly src/server.ts",
     "dev:up": "docker-compose up -d",
     "dev:down": "docker-compose down",
+    "lint": "eslint . --ext .ts",
     "test": "NODE_ENV=test mocha --exit -r ts-node/register/transpile-only -file test/suite.ts test/integration/**"
   }
 }

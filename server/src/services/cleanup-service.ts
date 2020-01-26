@@ -17,7 +17,7 @@ export default class CleanupService {
         if (affectedTweets) {
             log.info(`Removed ${affectedTweets} old tweets...`)
         }
-        
+
         const affectedHashtags = await this.hashtags.removeUnused()
         if (affectedHashtags) {
             log.info(`Removed ${affectedHashtags} unused hashtags...`)

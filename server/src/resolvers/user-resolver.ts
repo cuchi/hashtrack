@@ -24,10 +24,10 @@ class User {
 export class UserCreation {
     @Field()
     name: string
-    
+
     @Field()
     email: string
-    
+
     @Field()
     password: string
 }
