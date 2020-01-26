@@ -14,7 +14,7 @@
   - [x] Setup GraphQL client
 
 ### Phase 2 - MVP
-- [ ] Setup linting & code style - ESLint and/or Prettier
+- [x] Setup linting & code style - ESLint and/or Prettier
 - [x] Setup infrastructure - Terraform
   - [x] Application
   - [x] Database
@@ -51,9 +51,10 @@ Heroku
 - [x] Setup deploy
 - [x] Keep the database usage under 10k rows, because that is the Heroku's free
 PostgreSQL plan limit
+- [x] Filter the webSocket tweets via search too
 - [ ] Improve API error messages & handling (duplicated entities, etc)
-- [ ] Filter the webSocket tweets via search too
 - [ ] When user adds a new hashtag, improve the feedback by fetching some tweets
+- [ ] Password recovery
 - [ ] User self deletion
   - [ ] Server
   - [ ] Client
