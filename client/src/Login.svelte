@@ -21,7 +21,7 @@
                 throw new Error(`The field ${name} is required!`)
             }
         }
-            
+    
         if (isAccountCreation) {
             ensureExists(name, 'name')
         }
@@ -35,7 +35,7 @@
             verifyFields()
             if (isAccountCreation) {
                 await createUser(name, email, password)
-            }   
+            }
             const session = await createSession(email, password)
             dispatch('sessionCreated', session)
         } catch (error) {

@@ -23,6 +23,8 @@
     "apollo-link-context": "^1.0.19",
     "apollo-link-http": "^1.5.16",
     "apollo-link-ws": "1.0.19",
+    "eslint": "6.8.0",
+    "eslint-plugin-svelte3": "2.7.3",
     "graphql": "^14.5.8",
     "graphql-tag": "^2.10.1",
     "he": "1.2.0",
@@ -38,6 +40,7 @@
     "build": "rollup -c",
     "dev": "rollup -c -w",
     "start": "sirv public",
-    "test": "echo 'Nothing to test yet!'"
+    "test": "echo 'Nothing to test yet!'",
+    "lint": "yarn eslint . --ext .js,.svelte --fix"
   }
 }
