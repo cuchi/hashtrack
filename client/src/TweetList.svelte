@@ -23,7 +23,7 @@
         if (subscriber) {
             subscriber.unsubscribe()
         }
-        return listenTweets(tweet => {
+        return listenTweets(search, tweet => {
             tweets = [tweet, ...tweets].slice(0, maxListSize)
         })
     }

@@ -145,4 +145,12 @@ export default class TweetService {
 
         return deletion.affected ?? 0
     }
+
+    matches(search: string, tweet: Tweet) {
+        const escapedSearch = search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+        const searchRegex = new RegExp(escapedSearch, 'i')
+
+        return searchRegex.test(tweet.text)
+            || searchRegex.test(tweet.authorName)
+    }
 }

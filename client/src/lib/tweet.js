@@ -14,8 +14,8 @@ const graphql = {
     `,
 
     newTweets: gql`
-        subscription newTweet {
-            newTweet {
+        subscription newTweet($search: String!) {
+            newTweet(search: $search) {
                 id
                 authorName
                 text
@@ -29,7 +29,7 @@ export async function getTweets(search) {
     return client.call(graphql.tweets, { search })
 }
 
-export async function listenTweets(listener) {
-    return client.subscribe(graphql.newTweets, {}, data =>
+export async function listenTweets(search, listener) {
+    return client.subscribe(graphql.newTweets, { search }, data =>
         listener(data.newTweet))
 }

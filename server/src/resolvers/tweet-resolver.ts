@@ -6,9 +6,9 @@ import {
     Authorized,
     Query,
     Arg,
-    Subscription,
+    ResolverFilterData,
     Root,
-    ResolverFilterData
+    Subscription
 } from "type-graphql"
 import Container, { Inject } from "typedi"
 import { AuthorizedContext } from "../graphql"
@@ -19,7 +19,7 @@ import log from "../logger"
 
 type TweetSubscription = ResolverFilterData<
     TweetModel,
-    string,
+    { search?: string },
     AuthorizedContext
 >
 
@@ -47,15 +47,22 @@ export class TweetResolver {
         return this.service.get(context, search)
     }
 
-    @Subscription(_ => Tweet, { topics:
-        'tweet',
-        filter: (data: TweetSubscription) => {
-            return Container.get(TrackService)
-                .hasVisibility(data.context, data.payload.hashtags)
+    @Subscription(_ => Tweet, {
+        topics: 'tweet',
+        filter: async (data: TweetSubscription) => {
+            const { context, payload, args: { search } } = data
+            const tracks = Container.get(TrackService)
+            const tweets = Container.get(TweetService)
+
+            return (!search || tweets.matches(search, payload))
+                && (await tracks.hasVisibility(context, payload.hashtags))
         }
     })
     @Authorized()
-    newTweet(@Root() tweet: UnserializedTweet) {
+    newTweet(
+        @Root() tweet: UnserializedTweet,
+        @Arg('search', { nullable: true }) _?: string
+    ) {
         log.info('Streaming tweet')
         return { ...tweet, publishedAt: new Date(tweet.publishedAt) }
     }
