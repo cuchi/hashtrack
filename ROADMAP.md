@@ -51,6 +51,8 @@ Heroku
 - [x] Setup deploy
 - [x] Keep the database usage under 10k rows, because that is the Heroku's free
 PostgreSQL plan limit
+- [ ] Improve API error messages & handling (duplicated entities, etc)
+- [ ] Filter the webSocket tweets via search too
 - [ ] When user adds a new hashtag, improve the feedback by fetching some tweets
 - [ ] User self deletion
   - [ ] Server
