@@ -9,19 +9,6 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage>
     with SingleTickerProviderStateMixin {
-  AnimationController _iconAnimationController;
-
-  @override
-  void initState() {
-    super.initState();
-    _iconAnimationController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 500));
-    CurvedAnimation(
-      parent: _iconAnimationController,
-      curve: Curves.bounceOut,
-    ).addListener(() => setState(() {}));
-    _iconAnimationController.forward();
-  }
 
   TextFormField _buildInput(String label, TextInputType type,
           {bool obscure = false}) =>
