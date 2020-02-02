@@ -1,87 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hashtrack/bloc/authentication/authentication_bloc.dart';
+import 'package:hashtrack/bloc/authentication/authentication_event.dart';
+import 'package:hashtrack/bloc/authentication/authentication_state.dart';
+import 'package:hashtrack/ui/login.dart';
 
-void main() => runApp(MyApp());
+void main(){
 
-class MyApp extends StatelessWidget {
+  runApp(
+    BlocProvider<AuthenticationBloc>(
+      create: (context) {
+        return AuthenticationBloc()..add(AppStarted());
+      },
+      child: App()
+    )
+  );
+}
+
+class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(primaryColor: Colors.blue),
-      home: LoginPage(),
-    );
-  }
-}
-
-class LoginPage extends StatefulWidget {
-  @override
-  State createState() => _LoginPageState();
-}
-
-class _LoginPageState extends State<LoginPage>
-    with SingleTickerProviderStateMixin {
-  AnimationController _iconAnimationController;
-
-  @override
-  void initState() {
-    super.initState();
-    _iconAnimationController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 500));
-    CurvedAnimation(
-      parent: _iconAnimationController,
-      curve: Curves.bounceOut,
-    ).addListener(() => setState(() {}));
-    _iconAnimationController.forward();
-  }
-
-  TextFormField _buildInput(String label, TextInputType type,
-          {bool obscure = false}) =>
-      TextFormField(
-          decoration: InputDecoration(labelText: label),
-          keyboardType: type,
-          obscureText: obscure);
-
-  MaterialButton _buildLoginButton() => MaterialButton(
-        height: 50.0,
-        minWidth: 150.0,
-        color: Colors.green,
-        splashColor: Colors.teal,
-        textColor: Colors.white,
-        child: Text('Login'),
-        onPressed: () {},
-      );
-
-  Form _buildLoginForm() => Form(
-        autovalidate: true,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            _buildInput('Email', TextInputType.emailAddress),
-            _buildInput('Password', TextInputType.text, obscure: true),
-            Padding(
-              padding: const EdgeInsets.only(top: 60.0),
-            ),
-            _buildLoginButton()
-          ],
-        ),
-      );
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Stack(fit: StackFit.expand, children: <Widget>[
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Hashtrack App',
-              style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
-            ),
-            Container(
-                padding: const EdgeInsets.all(40.0), child: _buildLoginForm())
-          ],
-        ),
-      ]),
+      home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
+        builder: (context, state) {
+          if (state is AuthenticationAuthenticated) {
+            return Text('Logged in!');
+          }
+          if (state is AuthenticationUnauthenticated) {
+            return LoginPage();
+          }
+          if (state is AuthenticationLoading) {
+            return Text('Loading...');
+          }
+          return Text('Splash');
+        },
+      ),
     );
   }
 }
