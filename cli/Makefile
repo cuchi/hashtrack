@@ -3,8 +3,5 @@ all:
 	GOPATH=`pwd` go build -o hashtrack hashtrack/main
 
 clean:
-	rm hashtrack
-
-clean-all:
-	chmod +w -R bin src pkg
-	git clean -Xdf
+	chmod +w -R bin src
+	rm -rf bin hashtrack src/github.com src/golang.org
