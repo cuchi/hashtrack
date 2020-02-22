@@ -99,7 +99,10 @@ func main() {
 			graphql.WithHeader("Authorization", token),
 		)
 
-		tweet.List(client, "")
+		tweets, _ := tweet.List(client, "")
+		for _, tw := range tweets {
+			fmt.Println(tweet.Pretty(tw))
+		}
 	default:
 		fmt.Errorf("%s is not a valid command", args[0])
 	}
