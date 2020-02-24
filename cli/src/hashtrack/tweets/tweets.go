@@ -1,4 +1,4 @@
-package tweet
+package tweets
 
 import (
 	"context"
@@ -55,7 +55,8 @@ func List(client *graphql.Client, search string) ([]Tweet, error) {
 }
 
 func Pretty(tweet Tweet) string {
-	text := strings.ReplaceAll(tweet.Text, "\n", "")
+	// text := strings.ReplaceAll(tweet.Text, "\n", "")
+	text := tweet.Text
 	url := fmt.Sprintf(
 		"https://twitter.com/%s/status/%s",
 		strings.ReplaceAll(tweet.AuthorName, "@", ""),

@@ -5,67 +5,46 @@ import (
 	"io/ioutil"
 )
 
-type ConfigFile struct {
-	path string
-}
-
-type config struct {
+type Config struct {
 	Token string
+	path  string
 }
 
-func Init(path string) (*ConfigFile, error) {
-	cfgFile := ConfigFile{
-		path,
-	}
+func Init(path string) (*Config, error) {
+	var config Config
+	config.path = path
 
-	_, err := cfgFile.load()
+	err := config.Load()
 	if err != nil {
-		var config config
-		err = cfgFile.save(config)
+		err = config.Save()
 		if err != nil {
-			return &cfgFile, err
+			return &config, err
 		}
 	}
 
-	return &cfgFile, nil
+	return &config, nil
 }
 
-func (cfgFile *ConfigFile) SetToken(token string) error {
-	config, err := cfgFile.load()
-	if err != nil {
-		return err
-	}
-	config.Token = token
-	return cfgFile.save(config)
-}
-
-func (cfgFile *ConfigFile) GetToken() (string, error) {
-	config, err := cfgFile.load()
-	return config.Token, err
-}
-
-func (cfgFile *ConfigFile) load() (config, error) {
-	var config config
-	contents, err := ioutil.ReadFile(cfgFile.path)
-	if err != nil {
-		return config, err
-	}
-
-	err = json.Unmarshal(contents, &config)
-	if err != nil {
-		return config, err
-	}
-
-	return config, nil
-}
-
-func (cfgFile *ConfigFile) save(config config) error {
-	contents, err := json.Marshal(config)
+func (config *Config) Load() error {
+	contents, err := ioutil.ReadFile(config.path)
 	if err != nil {
 		return err
 	}
 
-	err = ioutil.WriteFile(cfgFile.path, contents, 0o644)
+	err = json.Unmarshal(contents, config)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (config *Config) Save() error {
+	contents, err := json.MarshalIndent(config, "", "    ")
+	if err != nil {
+		return err
+	}
+
+	err = ioutil.WriteFile(config.path, contents, 0o644)
 	if err != nil {
 		return err
 	}

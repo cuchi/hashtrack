@@ -6,13 +6,13 @@ import (
 	"github.com/Laisky/graphql"
 )
 
-type creationMutation = struct {
+type creationMutation struct {
 	CreateSession struct {
 		Token graphql.String
 	} `graphql:"createSession(email: $email, password: $password)"`
 }
 
-type CreationPayload = struct {
+type CreationPayload struct {
 	Email    string
 	Password string
 }
