@@ -1,6 +1,6 @@
 all:
-	GOPATH=`pwd` go get hashtrack/main
-	GOPATH=`pwd` go build -o hashtrack hashtrack/main
+	GOPATH=`pwd` go get hashtrack
+	GOPATH=`pwd` go build -o hashtrack hashtrack
 
 clean:
 	chmod +w -R bin src
