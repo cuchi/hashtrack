@@ -6,13 +6,14 @@ import (
 	"fmt"
 	"hashtrack/term"
 	"strings"
+	"time"
 
 	"github.com/Laisky/graphql"
 )
 
 type Tweet struct {
 	Id          string
-	PublishedAt string
+	PublishedAt time.Time
 	AuthorName  string
 	Text        string
 }
@@ -42,10 +43,15 @@ func List(client *graphql.Client, search string) ([]Tweet, error) {
 			)
 		}
 
+		publishedAt, err := time.Parse(time.RFC3339, string(tweet.PublishedAt))
+		if err != nil {
+			return tweets, err
+		}
+
 		newTweet := Tweet{
 			AuthorName:  string(tweet.AuthorName),
 			Text:        string(tweet.Text),
-			PublishedAt: string(tweet.PublishedAt),
+			PublishedAt: publishedAt,
 			Id:          id,
 		}
 
@@ -54,9 +60,30 @@ func List(client *graphql.Client, search string) ([]Tweet, error) {
 	return tweets, err
 }
 
+// TODO: Find a way to use GraphQL subscriptions in Go instead of bashing the
+// API every 5 secs.
+func watchTweets(tweets chan Tweet, client *graphql.Client, search string) {
+	latestTime := time.Now()
+	for {
+		time.Sleep(5000 * time.Millisecond)
+		newTweets, _ := List(client, search)
+		for _, tweet := range newTweets {
+			if tweet.PublishedAt.After(latestTime) {
+				latestTime = tweet.PublishedAt
+				tweets <- tweet
+			}
+		}
+	}
+}
+
+func Watch(client *graphql.Client, search string) chan Tweet {
+	tweets := make(chan Tweet)
+	go watchTweets(tweets, client, search)
+	return tweets
+}
+
 func Pretty(tweet Tweet) string {
-	// text := strings.ReplaceAll(tweet.Text, "\n", "")
-	text := tweet.Text
+	text := term.Wrap(tweet.Text, 60, 4)
 	url := fmt.Sprintf(
 		"https://twitter.com/%s/status/%s",
 		strings.ReplaceAll(tweet.AuthorName, "@", ""),
@@ -65,7 +92,7 @@ func Pretty(tweet Tweet) string {
 
 	prettyAuthorName := term.Cyan(term.Bold(tweet.AuthorName))
 	prettyURL := term.Dimmed(url)
-	return fmt.Sprintf("%s (%s)\n %s\n%s\n",
+	return fmt.Sprintf("%s (%s)\n%s\n%s\n",
 		prettyAuthorName,
 		tweet.PublishedAt,
 		text,

@@ -57,6 +57,19 @@ func list(ctx *context.Context) error {
 	return nil
 }
 
+func watch(ctx *context.Context) error {
+	if ctx.Config.Token == "" {
+		fmt.Println("You are not logged in!")
+		return nil
+	}
+	streamingTweets := tweets.Watch(ctx.GetClient(), "")
+	for tweet := range streamingTweets {
+		fmt.Println(tweets.Pretty(tweet))
+	}
+
+	return nil
+}
+
 func status(ctx *context.Context) error {
 	if ctx.Config.Token == "" {
 		fmt.Println("Not logged in.")
@@ -75,12 +88,16 @@ Usage:
 	hashtrack COMMAND [OPTIONS, ...]
 
 Commands:
-	login
-	logout
-	list
+	login       Create a session for the CLI
+	logout      Delete the current session
+	list        List the tweets
+	watch       Watch for tweets via a subscription
+	tracks      List current tracks
+	track       Track a new hashtag
+	untrack     Untrack a hashtag
 
 Options:
-	--endpoint, -e 
+	--endpoint, -e
 	--config, -c
 `
 
@@ -100,6 +117,8 @@ func main() {
 		err = logout(ctx)
 	case "list":
 		err = list(ctx)
+	case "watch":
+		err = watch(ctx)
 	case "status":
 		err = status(ctx)
 	default:
