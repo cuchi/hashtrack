@@ -6,9 +6,10 @@ import (
 	"hashtrack/session"
 	"hashtrack/tweets"
 	"hashtrack/user"
+	"os"
 )
 
-func login(ctx *context.Context) {
+func login(ctx *context.Context) error {
 	var email string
 	var password string
 
@@ -23,41 +24,50 @@ func login(ctx *context.Context) {
 		session.CreationPayload{email, password},
 	)
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	ctx.Config.Token = token
 	ctx.Config.Save()
 	fmt.Println("Login succeeded!")
+	return nil
 }
 
-func logout(ctx *context.Context) {
+func logout(ctx *context.Context) error {
 	if ctx.Config.Token == "" {
 		fmt.Println("You are not logged in, skipping...")
-		return
+		return nil
 	}
 	ctx.Config.Token = ""
-	ctx.Config.Save()
+	return ctx.Config.Save()
 }
 
-func list(ctx *context.Context) {
+func list(ctx *context.Context) error {
 	if ctx.Config.Token == "" {
 		fmt.Println("You are not logged in!")
-		return
+		return nil
 	}
-	lastTweets, _ := tweets.List(ctx.GetClient(), "")
+	lastTweets, err := tweets.List(ctx.GetClient(), "")
+	if err != nil {
+		return err
+	}
 	for _, tweet := range lastTweets {
 		fmt.Println(tweets.Pretty(tweet))
 	}
+	return nil
 }
 
-func status(ctx *context.Context) {
+func status(ctx *context.Context) error {
 	if ctx.Config.Token == "" {
 		fmt.Println("Not logged in.")
-		return
+		return nil
 	}
-	user, _ := user.GetCurrent(ctx.GetClient())
+	user, err := user.GetCurrent(ctx.GetClient())
+	if err != nil {
+		return err
+	}
 	fmt.Printf("Logged in as %s (%s)\n", user.Name, user.Email)
+	return nil
 }
 
 const usage = `
@@ -79,20 +89,27 @@ func main() {
 
 	if len(ctx.Args) == 0 {
 		fmt.Println(usage)
-		return
+		os.Exit(1)
 	}
 
+	var err error
 	switch ctx.Args[0] {
 	case "login":
-		login(ctx)
+		err = login(ctx)
 	case "logout":
-		logout(ctx)
+		err = logout(ctx)
 	case "list":
-		list(ctx)
+		err = list(ctx)
 	case "status":
-		status(ctx)
+		err = status(ctx)
 	default:
 		fmt.Printf("%s is not a valid command\n", ctx.Args[0])
 		fmt.Println(usage)
+		os.Exit(1)
+	}
+
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
 	}
 }
