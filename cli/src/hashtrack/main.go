@@ -1,13 +1,22 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"hashtrack/context"
 	"hashtrack/session"
+	"hashtrack/tracks"
 	"hashtrack/tweets"
 	"hashtrack/user"
 	"os"
 )
+
+func assertLoggedIn(ctx *context.Context) error {
+	if ctx.Config.Token == "" {
+		return errors.New("You are not logged in")
+	}
+	return nil
+}
 
 func login(ctx *context.Context) error {
 	var email string
@@ -43,9 +52,8 @@ func logout(ctx *context.Context) error {
 }
 
 func list(ctx *context.Context) error {
-	if ctx.Config.Token == "" {
-		fmt.Println("You are not logged in!")
-		return nil
+	if err := assertLoggedIn(ctx); err != nil {
+		return err
 	}
 	lastTweets, err := tweets.List(ctx.GetClient(), "")
 	if err != nil {
@@ -57,10 +65,37 @@ func list(ctx *context.Context) error {
 	return nil
 }
 
+func listTracks(ctx *context.Context) error {
+	if err := assertLoggedIn(ctx); err != nil {
+		return err
+	}
+	currentTracks, err := tracks.List(ctx.GetClient())
+	if err != nil {
+		return err
+	}
+	for _, track := range currentTracks {
+		fmt.Println(tracks.Pretty(track))
+	}
+	return nil
+}
+
+func untrack(ctx *context.Context) error {
+	if err := assertLoggedIn(ctx); err != nil {
+		return err
+	}
+	return tracks.Remove(ctx.GetClient(), ctx.Args[1])
+}
+
+func track(ctx *context.Context) error {
+	if err := assertLoggedIn(ctx); err != nil {
+		return err
+	}
+	return tracks.Create(ctx.GetClient(), ctx.Args[1])
+}
+
 func watch(ctx *context.Context) error {
-	if ctx.Config.Token == "" {
-		fmt.Println("You are not logged in!")
-		return nil
+	if err := assertLoggedIn(ctx); err != nil {
+		return err
 	}
 	streamingTweets := tweets.Watch(ctx.GetClient(), "")
 	for tweet := range streamingTweets {
@@ -117,6 +152,12 @@ func main() {
 		err = logout(ctx)
 	case "list":
 		err = list(ctx)
+	case "tracks":
+		err = listTracks(ctx)
+	case "untrack":
+		err = untrack(ctx)
+	case "track":
+		err = track(ctx)
 	case "watch":
 		err = watch(ctx)
 	case "status":
