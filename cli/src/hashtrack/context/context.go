@@ -53,7 +53,7 @@ func (ctx *Context) initClient() {
 }
 
 func (ctx *Context) GetClient() *graphql.Client {
-	if ctx.client != nil || ctx.Config.Token != ctx.initializedToken {
+	if ctx.client == nil || ctx.Config.Token != ctx.initializedToken {
 		ctx.initClient()
 	}
 
