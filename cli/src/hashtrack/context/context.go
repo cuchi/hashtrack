@@ -16,7 +16,7 @@ type Options struct {
 
 type Context struct {
 	Options          Options
-	Args             []string
+	args             []string
 	Config           *localconfig.Config
 	client           *graphql.Client
 	initializedToken string
@@ -25,7 +25,7 @@ type Context struct {
 func Init() (*Context, error) {
 	var context Context
 	args, options := getOptions()
-	context.Args = args
+	context.args = args
 	context.Options = options
 	config, err := localconfig.Init(options.Config)
 	if err != nil {
@@ -58,6 +58,15 @@ func (ctx *Context) GetClient() *graphql.Client {
 	}
 
 	return ctx.client
+}
+
+func (ctx *Context) NextArg() string {
+	if len(ctx.args) == 0 {
+		return ""
+	}
+	arg := ctx.args[0]
+	ctx.args = ctx.args[1:]
+	return arg
 }
 
 func getOptions() ([]string, Options) {

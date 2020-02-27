@@ -55,7 +55,7 @@ func list(ctx *context.Context) error {
 	if err := assertLoggedIn(ctx); err != nil {
 		return err
 	}
-	lastTweets, err := tweets.List(ctx.GetClient(), "")
+	lastTweets, err := tweets.List(ctx.GetClient(), ctx.NextArg())
 	if err != nil {
 		return err
 	}
@@ -83,21 +83,46 @@ func untrack(ctx *context.Context) error {
 	if err := assertLoggedIn(ctx); err != nil {
 		return err
 	}
-	return tracks.Remove(ctx.GetClient(), ctx.Args[1])
+	client := ctx.GetClient()
+	for {
+		hashtag := ctx.NextArg()
+		if hashtag == "" {
+			break
+		}
+		fmt.Printf("Untracking %s...\n", hashtag)
+		err := tracks.Remove(client, hashtag)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func track(ctx *context.Context) error {
 	if err := assertLoggedIn(ctx); err != nil {
 		return err
 	}
-	return tracks.Create(ctx.GetClient(), ctx.Args[1])
+
+	client := ctx.GetClient()
+	for {
+		hashtag := ctx.NextArg()
+		if hashtag == "" {
+			break
+		}
+		fmt.Printf("Tracking %s...\n", hashtag)
+		err := tracks.Create(client, hashtag)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func watch(ctx *context.Context) error {
 	if err := assertLoggedIn(ctx); err != nil {
 		return err
 	}
-	streamingTweets := tweets.Watch(ctx.GetClient(), "")
+	streamingTweets := tweets.Watch(ctx.GetClient(), ctx.NextArg())
 	for tweet := range streamingTweets {
 		fmt.Println(tweets.Pretty(tweet))
 	}
@@ -139,13 +164,14 @@ Options:
 func main() {
 	ctx, _ := context.Init()
 
-	if len(ctx.Args) == 0 {
+	arg := ctx.NextArg()
+	if arg == "" {
 		fmt.Println(usage)
 		os.Exit(1)
 	}
 
 	var err error
-	switch ctx.Args[0] {
+	switch arg {
 	case "login":
 		err = login(ctx)
 	case "logout":
@@ -163,7 +189,7 @@ func main() {
 	case "status":
 		err = status(ctx)
 	default:
-		fmt.Printf("%s is not a valid command\n", ctx.Args[0])
+		fmt.Printf("%s is not a valid command\n", arg)
 		fmt.Println(usage)
 		os.Exit(1)
 	}
