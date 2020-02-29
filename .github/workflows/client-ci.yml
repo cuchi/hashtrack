@@ -1,0 +1,39 @@
+name: Client CI
+
+on:
+  pull_request:
+    paths:
+      - 'client/**'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [8.x, 10.x, 12.x]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install dependencies
+        run: yarn
+
+      - name: Build
+        run: yarn build
+        working-directory: client
+
+      - name: Lint
+        run: yarn lint
+        working-directory: client
+
+      - name: Test
+        run: yarn test
+        working-directory: client
