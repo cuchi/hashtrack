@@ -23,10 +23,7 @@ func wrap(chars []rune, columnSize int) []string {
 	}
 	breakIndex := 0
 	for index, char := range chars {
-		if index > columnSize-1 {
-			if breakIndex == 0 {
-				break
-			}
+		if index > columnSize-1 && breakIndex != 0 {
 			next := wrap(chars[breakIndex+1:], columnSize)
 			current := string(chars[:breakIndex])
 			return append([]string{current}, next...)
