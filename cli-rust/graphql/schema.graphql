@@ -1,0 +1,12 @@
+
+schema {
+    mutation: Mutation
+}
+
+type Mutation {
+    createSession(email: String!, password: String!): Session!
+}
+
+type Session {
+    token: String!
+}
