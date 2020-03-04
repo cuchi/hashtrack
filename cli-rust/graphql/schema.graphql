@@ -1,6 +1,12 @@
 
 schema {
     mutation: Mutation
+    query: Query
+}
+
+type Query {
+    currentUser: User!
+    tweets(search: String!): [Tweet!]!
 }
 
 type Mutation {
@@ -9,4 +15,17 @@ type Mutation {
 
 type Session {
     token: String!
+}
+
+type User {
+    id: String!
+    name: String!
+    email: String!
+}
+
+type Tweet {
+    id: String!
+    authorName: String!
+    text: String!
+    publishedAt: String!
 }

@@ -302,6 +302,7 @@ version = "0.1.0"
 dependencies = [
  "getopts 0.2.21 (registry+https://github.com/rust-lang/crates.io-index)",
  "graphql_client 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "http 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "reqwest 0.10.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "rpassword 4.0.5 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde 1.0.104 (registry+https://github.com/rust-lang/crates.io-index)",

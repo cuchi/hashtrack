@@ -1,0 +1,8 @@
+query Tweets($search: String!) {
+    tweets(search: $search) {
+        id
+        authorName
+        text
+        publishedAt
+    }
+}

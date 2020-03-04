@@ -6,7 +6,7 @@ use std::path::PathBuf;
 
 #[derive(Serialize, Deserialize)]
 pub struct Contents {
-    pub token: String,
+    pub token: Option<String>,
     pub endpoint: Option<String>
 }
 

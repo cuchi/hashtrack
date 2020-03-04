@@ -48,9 +48,10 @@ impl Context {
                 config_path.push(".hashtrack.config");
             }
         };
+        let free_args = &matches.free;
         Ok(Context {
-            matches: matches,
-            args,
+            matches: matches.clone(),
+            args: free_args.to_owned(),
             config: Config::load(&config_path)?,
         })
     }
@@ -63,9 +64,12 @@ impl Context {
         return arg;
     }
 
-    pub fn set_token(&mut self, token: String) -> io::Result<()> {
+    pub fn set_token(&mut self, token: Option<String>) -> io::Result<()> {
         self.config.contents.token = token;
         self.config.save()
+    }
+    pub fn get_token(&self) -> Option<String> {
+        self.config.contents.token.clone()
     }
     pub fn get_endpoint(&self) -> String {
         self.matches.opt_str("endpoint").unwrap_or(

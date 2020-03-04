@@ -9,8 +9,11 @@ use std::io;
 use text_io::read;
 use tokio::runtime::Runtime;
 
+mod api;
 mod context;
 mod session;
+mod user;
+mod tweet;
 
 struct CliError {
     message: String,
@@ -26,8 +29,8 @@ impl From<io::Error> for CliError {
     }
 }
 
-impl From<session::Error> for CliError {
-    fn from(error: session::Error) -> Self {
+impl From<api::Error> for CliError {
+    fn from(error: api::Error) -> Self {
         CliError {
             message: error.0,
             is_usage_error: false,
@@ -40,24 +43,36 @@ async fn login(context: &mut Context) -> Result<(), CliError> {
     let email: String = read!();
     println!("Password: ");
     let password = read_password_from_tty(None)?;
-    let session = session::create(email, password).await?;
-    context.set_token(session.token)?;
+    let session = session::create(context, session::Creation { email, password }).await?;
+    context.set_token(Some(session.token))?;
     println!("Login succeeded!");
+    Ok(())
+}
+
+async fn status(context: &Context) -> Result<(), CliError> {
+    let user = user::get_current(context).await?;
+    println!("{:?}", user);
+    Ok(())
+}
+
+fn logout(context: &mut Context) -> Result<(), CliError> {
+    context.set_token(None)?;
+    Ok(())
+}
+
+async fn get_latest_tweets(context: &Context) -> Result<(), CliError> {
+    let tweets = tweet::get_latest(context, String::from("")).await?;
+    println!("{:?}", tweets);
     Ok(())
 }
 
 fn run_subcommand(context: &mut Context) -> Result<(), CliError> {
     let mut runtime = Runtime::new().unwrap();
     match context.next_arg().as_ref().map(String::as_str) {
+        Some("status") => runtime.block_on(status(context)),
         Some("login") => runtime.block_on(login(context)),
-        Some("logout") => {
-            println!("Logout!");
-            Ok(())
-        }
-        Some("list") => {
-            println!("List!");
-            Ok(())
-        }
+        Some("logout") => logout(context),
+        Some("list") => runtime.block_on(get_latest_tweets(context)),
         Some("watch") => {
             println!("Watch!");
             Ok(())
@@ -89,8 +104,7 @@ fn main() {
     let mut opts = Options::new();
     opts.optopt("e", "endpoint", "The hashtrack service endpoint", "ENPOINT")
         .optopt("c", "config", "The config file location", "PATH_TO_CONFIG");
-    let args: Vec<String> = env::args().collect();
-    let mut context = Context::new(args[1..].to_vec(), opts).unwrap();
+    let mut context = Context::new(env::args().collect(), opts).unwrap();
 
     match run_subcommand(&mut context) {
         Ok(_) => (),
