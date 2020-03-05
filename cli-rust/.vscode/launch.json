@@ -19,7 +19,7 @@
                     "kind": "bin"
                 }
             },
-            "args": [],
+            "args": ["watch"],
             "cwd": "${workspaceFolder}"
         },
         {

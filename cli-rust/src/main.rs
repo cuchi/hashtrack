@@ -1,3 +1,4 @@
+extern crate chrono;
 extern crate getopts;
 extern crate rpassword;
 
@@ -12,8 +13,9 @@ use tokio::runtime::Runtime;
 mod api;
 mod context;
 mod session;
-mod user;
+mod track;
 mod tweet;
+mod user;
 
 struct CliError {
     message: String,
@@ -61,9 +63,59 @@ fn logout(context: &mut Context) -> Result<(), CliError> {
 }
 
 async fn get_latest_tweets(context: &Context) -> Result<(), CliError> {
-    let tweets = tweet::get_latest(context, String::from("")).await?;
-    println!("{:?}", tweets);
+    tweet::get_latest(context, String::from(""))
+        .await?
+        .iter()
+        .for_each(|tweet| {
+            println!("{}", tweet);
+        });
     Ok(())
+}
+
+fn stream_latest_tweets(context: &Context) -> Result<(), CliError> {
+    let receiver = tweet::stream_latest(context, String::from(""));
+    loop {
+        match receiver.recv() {
+            Ok(tweet) => println!("{}", tweet),
+            Err(_) => break,
+        };
+    }
+    Ok(())
+}
+
+async fn list_tracks(context: &Context) -> Result<(), CliError> {
+    track::get_all(context).await?.iter().for_each(|track| {
+        println!("{}", track);
+    });
+    Ok(())
+}
+
+async fn create_track(context: &mut Context) -> Result<(), CliError> {
+    match context.next_arg() {
+        Some(hashtag) => {
+            let track = track::create(context, track::Creation { hashtag }).await?;
+            println!("Now tracking {}...", track.pretty_name);
+            Ok(())
+        },
+        _ => Err(CliError {
+            message: String::from("Expected hashtag name to start tracking"),
+            is_usage_error: false,
+        })
+    }
+}
+
+async fn remove_track(context: &mut Context) -> Result<(), CliError> {
+    match context.next_arg() {
+        Some(hashtag) => {
+            let track = track::remove(context, track::Removal { hashtag }).await?;
+            println!("Stopped tracking {}", track.pretty_name);
+            Ok(())
+        },
+        _ => Err(CliError {
+            message: String::from("Expected hashtag name to untrack"),
+            is_usage_error: false,
+        })
+    }
 }
 
 fn run_subcommand(context: &mut Context) -> Result<(), CliError> {
@@ -73,22 +125,10 @@ fn run_subcommand(context: &mut Context) -> Result<(), CliError> {
         Some("login") => runtime.block_on(login(context)),
         Some("logout") => logout(context),
         Some("list") => runtime.block_on(get_latest_tweets(context)),
-        Some("watch") => {
-            println!("Watch!");
-            Ok(())
-        }
-        Some("tracks") => {
-            println!("Tracks!");
-            Ok(())
-        }
-        Some("track") => {
-            println!("Track!");
-            Ok(())
-        }
-        Some("untrack") => {
-            println!("Untrack!");
-            Ok(())
-        }
+        Some("watch") => stream_latest_tweets(context),
+        Some("tracks") => runtime.block_on(list_tracks(context)),
+        Some("track") => runtime.block_on(create_track(context)),
+        Some("untrack") => runtime.block_on(remove_track(context)),
         Some(x) => Err(CliError {
             message: format!("Unknown command {}", x).to_string(),
             is_usage_error: true,

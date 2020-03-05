@@ -6,8 +6,11 @@ use std::path::PathBuf;
 
 #[derive(Serialize, Deserialize)]
 pub struct Contents {
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub token: Option<String>,
-    pub endpoint: Option<String>
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub endpoint: Option<String>,
 }
 
 pub struct Config {
@@ -21,7 +24,10 @@ impl Config {
         let mut file_buf = Vec::new();
         file.read_to_end(&mut file_buf)?;
         let contents: Contents = serde_json::from_slice(&file_buf)?;
-        Ok(Config { path: path.clone(), contents })
+        Ok(Config {
+            path: path.clone(),
+            contents,
+        })
     }
     pub fn save(&mut self) -> io::Result<()> {
         let json = serde_json::to_string(&self.contents)?;

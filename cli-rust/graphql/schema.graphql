@@ -2,15 +2,23 @@
 schema {
     mutation: Mutation
     query: Query
+    subscription: Subscription
 }
 
 type Query {
     currentUser: User!
     tweets(search: String!): [Tweet!]!
+    tracks: [Track!]!
 }
 
 type Mutation {
     createSession(email: String!, password: String!): Session!
+    createTrack(hashtag: String!): Track!
+    removeTrack(hashtag: String!): Track!
+}
+
+type Subscription {
+    newTweet(search: String!): Tweet!
 }
 
 type Session {
@@ -28,4 +36,10 @@ type Tweet {
     authorName: String!
     text: String!
     publishedAt: String!
+}
+
+type Track {
+    hashtagName: String!
+    prettyName: String!
+    createdAt: String!
 }

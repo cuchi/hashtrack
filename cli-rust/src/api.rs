@@ -1,6 +1,8 @@
 use super::context::Context;
 use graphql_client::Response;
 
+pub mod ws;
+
 #[derive(Debug)]
 pub struct Error(pub String);
 
