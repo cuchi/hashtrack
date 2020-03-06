@@ -1,9 +1,9 @@
-name: CLI CI
+name: CLI CI (Go)
 
 on:
   pull_request:
     paths:
-      - 'cli/**'
+      - 'cli-go/**'
 
 jobs:
   build:
@@ -21,8 +21,8 @@ jobs:
 
       - name: Build
         run: make
-        working-directory: cli
+        working-directory: cli-go
 
       - name: Test
         run: make test
-        working-directory: cli
+        working-directory: cli-go

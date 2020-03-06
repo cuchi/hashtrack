@@ -1,0 +1,22 @@
+[package]
+name = "hashtrack"
+version = "0.1.0"
+authors = ["Paulo Henrique Cuchi <paulo.cuchi@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+getopts = "0.2"
+graphql_client = "0.8.0"
+serde = "1.0.104"
+serde_json = "1.0"
+reqwest = { version = "0.10.3", features = ["json"] }
+tokio = "0.2.13"
+rpassword = "4.0"
+text_io = "0.1.8"
+http = "0.2.0"
+websocket = "0.24.0"
+textwrap = "0.11.0"
+ansi_term = "0.12.1"
+chrono = { version = "0.4.10", features = ["serde"] }

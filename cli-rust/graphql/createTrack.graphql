@@ -1,0 +1,7 @@
+mutation CreateTrack($hashtag: String!) {
+    createTrack(hashtag: $hashtag) {
+        hashtagName
+        prettyName
+        createdAt
+    }
+}

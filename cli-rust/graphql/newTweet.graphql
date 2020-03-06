@@ -1,0 +1,8 @@
+subscription NewTweet($search: String!) {
+    newTweet(search: $search) {
+        id
+        authorName
+        text
+        publishedAt
+    }
+}
