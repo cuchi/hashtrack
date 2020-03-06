@@ -111,7 +111,7 @@ pub fn stream_latest(context: &Context, search: String) -> Receiver<Tweet> {
                 OwnedMessage::Text(data) => {
                     serde_json::from_str::<WsMessage<Response<new_tweet::ResponseData>>>(&data)
                         .unwrap()
-                },
+                }
                 OwnedMessage::Binary(data) => {
                     serde_json::from_slice::<WsMessage<Response<new_tweet::ResponseData>>>(&data)
                         .unwrap()

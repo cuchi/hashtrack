@@ -96,11 +96,11 @@ async fn create_track(context: &mut Context) -> Result<(), CliError> {
             let track = track::create(context, track::Creation { hashtag }).await?;
             println!("Now tracking {}...", track.pretty_name);
             Ok(())
-        },
+        }
         _ => Err(CliError {
             message: String::from("Expected hashtag name to start tracking"),
             is_usage_error: false,
-        })
+        }),
     }
 }
 
@@ -110,11 +110,11 @@ async fn remove_track(context: &mut Context) -> Result<(), CliError> {
             let track = track::remove(context, track::Removal { hashtag }).await?;
             println!("Stopped tracking {}", track.pretty_name);
             Ok(())
-        },
+        }
         _ => Err(CliError {
             message: String::from("Expected hashtag name to untrack"),
             is_usage_error: false,
-        })
+        }),
     }
 }
 
