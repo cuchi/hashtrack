@@ -1,0 +1,9 @@
+.card {
+    margin: 0.1em;
+}
+.card:hover {
+    text-decoration: line-through;
+    opacity: 0.5;
+    transition: opacity 0.1s ease-in-out;
+    cursor: pointer;
+}

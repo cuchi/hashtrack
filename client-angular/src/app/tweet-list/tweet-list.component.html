@@ -1,0 +1,17 @@
+<div class="uk-margin uk-inline">
+  <!-- <SearchIcon /> -->
+  <input class="uk-input uk-form-width-medium" [(ngModel)]="search" (keydown)="searchTweets()" />
+</div>
+
+<app-empty-state-card *ngIf="!tweets">
+  Loading...
+</app-empty-state-card>
+
+<app-empty-state-card *ngIf="tweets && !tweets.length">
+  No tweets to display, try including a new hashtag
+</app-empty-state-card>
+
+<ng-container *ngFor="let tweet of (tweets || [])">
+  <app-tweet-card [id]="tweet.id" [authorName]="tweet.authorName" [publishedAt]="tweet.publishedAt" [text]="tweet.text">
+  </app-tweet-card>
+</ng-container>

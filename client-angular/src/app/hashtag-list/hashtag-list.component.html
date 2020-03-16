@@ -1,0 +1,22 @@
+<div class="uk-margin" uk-margin>
+    <input class="uk-input uk-form-width-medium" placeholder="{{selectedSuggestion}}" type="text"
+        [(ngModel)]="hashtagName" on:keyup={onTrackInput}>
+    <button class="uk-button uk-button-primary" (click)="track()" ng-disabled="!hashtagName">
+        Track
+    </button>
+</div>
+
+<app-empty-state-card *ngIf="!tracks">
+    Loading...
+</app-empty-state-card>
+
+<app-empty-state-card *ngIf="tracks && !tracks.length">
+    You are not tracking any hashtags at the moment...
+</app-empty-state-card>
+
+<div *ngIf="tracks?.length" class="uk-flex uk-flex-wrap uk-flex-wrap-around">
+    <div *ngFor="let track of tracks" class="uk-card uk-card-default uk-card-body uk-card-small card"
+        (click)="untrack(track.hashtagName)">
+        {{track.prettyName}}
+    </div>
+</div>

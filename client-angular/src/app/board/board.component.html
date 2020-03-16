@@ -1,0 +1,29 @@
+<div class="uk-width-xlarge uk-margin-top">
+    <nav class="uk-navbar-container" uk-navbar>
+        <div class="uk-navbar-left">
+            <ul class="uk-navbar-nav">
+                <li [class]="tab === 'tweets' ? 'uk-active' : ''">
+                    <a (click)="setTab('tweets')">
+                        Tweets
+                    </a>
+                </li>
+                <li [class]="tab === 'hashtags' ? 'uk-active' : ''">
+                    <a (click)="setTab('hashtags')">
+                        Hashstags
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="uk-navbar-right">
+            <ul class="uk-navbar-nav">
+                <li>
+                    <a (click)="onLogout()">
+                        Logout
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <app-tweet-list *ngIf="tab === 'tweets'"></app-tweet-list>
+    <app-hashtag-list *ngIf="tab === 'hashtags'"></app-hashtag-list>
+</div>
