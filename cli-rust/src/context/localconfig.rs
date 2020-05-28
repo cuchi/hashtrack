@@ -45,10 +45,10 @@ impl Config {
             }
         }
     }
+
     pub fn save(&mut self) -> io::Result<()> {
         let json = serde_json::to_string(&self.contents)?;
         let mut file = File::create(&self.path)?;
-        file.write_all(json.as_bytes())?;
-        Ok(())
+        file.write_all(json.as_bytes())
     }
 }
