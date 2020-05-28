@@ -9,6 +9,8 @@ import (
 	"github.com/jessevdk/go-flags"
 )
 
+const DEFAULT_ENDPOINT = "https://hashtrack.herokuapp.com/graphql"
+
 type Options struct {
 	Endpoint string `short:"e"`
 	Config   string `short:"c"`
@@ -24,14 +26,18 @@ type Context struct {
 
 func Init() (*Context, error) {
 	var context Context
-	args, options := getOptions()
-	context.args = args
-	context.Options = options
-	config, err := localconfig.Init(options.Config)
+	args, options, err := getUserOptions()
 	if err != nil {
 		return &context, err
 	}
+	config, err := initConfig(options)
+	if err != nil {
+		return &context, err
+	}
+
+	context.args = args
 	context.Config = config
+	context.Options = mergeOptionsWithConfig(options, config)
 
 	return &context, nil
 }
@@ -69,20 +75,27 @@ func (ctx *Context) NextArg() string {
 	return arg
 }
 
-func getOptions() ([]string, Options) {
+func initConfig(opts Options) (*localconfig.Config, error) {
+	configLocation := opts.Config
+	if configLocation == "" {
+		configLocation = fmt.Sprintf("%s/.hashtrack.config", os.Getenv("HOME"))
+	}
+	return localconfig.Init(configLocation)
+}
+
+func mergeOptionsWithConfig(opts Options, config *localconfig.Config) Options {
+	var newOpts Options
+	newOpts.Endpoint = DEFAULT_ENDPOINT
+	if opts.Endpoint != "" {
+		newOpts.Endpoint = opts.Endpoint
+	} else if config.Endpoint != "" {
+		newOpts.Endpoint = config.Endpoint
+	}
+	return newOpts
+}
+
+func getUserOptions() ([]string, Options, error) {
 	var opts Options
 	args, err := flags.Parse(&opts)
-	if err != nil {
-		panic(err)
-	}
-
-	if opts.Endpoint == "" {
-		opts.Endpoint = "https://hashtrack.herokuapp.com/graphql"
-	}
-
-	if opts.Config == "" {
-		opts.Config = fmt.Sprintf("%s/.hashtrack.config", os.Getenv("HOME"))
-	}
-
-	return args, opts
+	return args, opts, err
 }

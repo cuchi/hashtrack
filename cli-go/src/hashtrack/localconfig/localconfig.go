@@ -6,8 +6,9 @@ import (
 )
 
 type Config struct {
-	Token string
-	path  string
+	Token    string
+	Endpoint string
+	path     string
 }
 
 func Init(path string) (*Config, error) {

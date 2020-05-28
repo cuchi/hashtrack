@@ -17,6 +17,25 @@ mod track;
 mod tweet;
 mod user;
 
+const USAGE: &str = "
+Usage:
+    hashtrack COMMAND [OPTIONS, ...]
+
+
+Commands:
+    login       Create a session for the CLI
+    logout      Delete the current session
+    list        List the tweets
+    watch       Watch for tweets via a subscription
+    tracks      List current tracks
+    track       Track a new hashtag
+    untrack     Untrack a hashtag
+
+Options:
+    --endpoint, -e
+    --config, -c
+";
+
 struct CliError {
     message: String,
     is_usage_error: bool,
@@ -149,9 +168,10 @@ fn main() {
     match run_subcommand(&mut context) {
         Ok(_) => (),
         Err(error) => {
-            println!("{}", error.message);
             if error.is_usage_error {
-                println!("Print usage here...")
+                println!("{}", USAGE);
+            } else {
+                println!("{}", error.message);
             }
         }
     }
