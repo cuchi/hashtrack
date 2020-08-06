@@ -1,11 +1,9 @@
 all:
-	GOPATH=`pwd` go get hashtrack
-	GOPATH=`pwd` go build -o hashtrack hashtrack
+	go get
+	go build
 
 clean:
-	chmod +w -R bin src
-	rm -rf bin hashtrack src/github.com src/golang.org
+	rm hashtrack
 
-MODULES := $(shell find src/hashtrack/* -type d | grep -oP "^src/\K.*")
 test:
-	GOPATH=`pwd` go test $(MODULES)
+	go test ./...
