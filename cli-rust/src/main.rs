@@ -8,7 +8,6 @@ use rpassword::read_password_from_tty;
 use std::env;
 use std::io;
 use text_io::read;
-use tokio::runtime::Runtime;
 
 mod api;
 mod common;
@@ -138,17 +137,16 @@ async fn remove_track(context: &mut Context) -> Result<(), CliError> {
     }
 }
 
-fn run_subcommand(context: &mut Context) -> Result<(), CliError> {
-    let mut runtime = Runtime::new().unwrap();
+async fn run_subcommand(context: &mut Context) -> Result<(), CliError> {
     match context.next_arg().as_ref().map(String::as_str) {
-        Some("status") => runtime.block_on(status(context)),
-        Some("login") => runtime.block_on(login(context)),
+        Some("status") => status(context).await,
+        Some("login") => login(context).await,
         Some("logout") => logout(context),
-        Some("list") => runtime.block_on(get_latest_tweets(context)),
+        Some("list") => get_latest_tweets(context).await,
         Some("watch") => stream_latest_tweets(context),
-        Some("tracks") => runtime.block_on(list_tracks(context)),
-        Some("track") => runtime.block_on(create_track(context)),
-        Some("untrack") => runtime.block_on(remove_track(context)),
+        Some("tracks") => list_tracks(context).await,
+        Some("track") => create_track(context).await,
+        Some("untrack") => remove_track(context).await,
         Some(x) => Err(CliError {
             message: format!("Unknown command {}", x).to_string(),
             is_usage_error: true,
@@ -160,13 +158,14 @@ fn run_subcommand(context: &mut Context) -> Result<(), CliError> {
     }
 }
 
-fn main() {
+#[tokio::main]
+async fn main() {
     let mut opts = Options::new();
     opts.optopt("e", "endpoint", "The hashtrack service endpoint", "ENPOINT")
         .optopt("c", "config", "The config file location", "PATH_TO_CONFIG");
     let mut context = Context::new(env::args().collect(), opts).unwrap();
 
-    match run_subcommand(&mut context) {
+    match run_subcommand(&mut context).await {
         Ok(_) => (),
         Err(error) => {
             if error.is_usage_error {
