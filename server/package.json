@@ -45,7 +45,7 @@
     "@types/mocha": "5.2.7",
     "@types/ramda": "0.26.40",
     "@types/twit": "2.2.23",
-    "apollo-server-core": "2.9.16",
+    "apollo-server-core": "2.17.0",
     "apollo-server-testing": "2.9.16",
     "chai": "4.2.0",
     "chai-as-promised": "7.1.1",
