@@ -1,62 +1,24 @@
-extern crate chrono;
-extern crate getopts;
-extern crate rpassword;
-
+use crate::opts::{HashtrackCommand, HashtrackOpt};
 use context::Context;
-use getopts::Options;
+use derive_more::From;
 use rpassword::read_password_from_tty;
-use std::env;
 use std::io;
+use structopt::StructOpt;
 use text_io::read;
-use tokio::runtime::Runtime;
 
 mod api;
+mod common;
 mod context;
+mod opts;
 mod session;
 mod track;
 mod tweet;
 mod user;
 
-const USAGE: &str = "
-Usage:
-    hashtrack COMMAND [OPTIONS, ...]
-
-
-Commands:
-    login       Create a session for the CLI
-    logout      Delete the current session
-    list        List the tweets
-    watch       Watch for tweets via a subscription
-    tracks      List current tracks
-    track       Track a new hashtag
-    untrack     Untrack a hashtag
-
-Options:
-    --endpoint, -e
-    --config, -c
-";
-
-struct CliError {
-    message: String,
-    is_usage_error: bool,
-}
-
-impl From<io::Error> for CliError {
-    fn from(error: io::Error) -> Self {
-        CliError {
-            message: error.to_string(),
-            is_usage_error: false,
-        }
-    }
-}
-
-impl From<api::Error> for CliError {
-    fn from(error: api::Error) -> Self {
-        CliError {
-            message: error.0,
-            is_usage_error: false,
-        }
-    }
+#[derive(Debug, From)]
+enum CliError {
+    IoError(io::Error),
+    ApiError(api::ApiError),
 }
 
 async fn login(context: &mut Context) -> Result<(), CliError> {
@@ -109,70 +71,40 @@ async fn list_tracks(context: &Context) -> Result<(), CliError> {
     Ok(())
 }
 
-async fn create_track(context: &mut Context) -> Result<(), CliError> {
-    match context.next_arg() {
-        Some(hashtag) => {
-            let track = track::create(context, track::Creation { hashtag }).await?;
-            println!("Now tracking {}...", track.pretty_name);
-            Ok(())
-        }
-        _ => Err(CliError {
-            message: String::from("Expected hashtag name to start tracking"),
-            is_usage_error: false,
-        }),
+async fn create_track(context: &mut Context, hashtag: String) -> Result<(), CliError> {
+    let track = track::create(context, track::Creation { hashtag }).await?;
+    println!("Now tracking {}...", track.pretty_name);
+    Ok(())
+}
+
+async fn remove_track(context: &mut Context, hashtag: String) -> Result<(), CliError> {
+    let track = track::remove(context, track::Removal { hashtag }).await?;
+    println!("Stopped tracking {}", track.pretty_name);
+    Ok(())
+}
+
+async fn run_subcommand(context: &mut Context, opts: HashtrackCommand) -> Result<(), CliError> {
+    match opts {
+        HashtrackCommand::Status => status(context).await,
+        HashtrackCommand::Login => login(context).await,
+        HashtrackCommand::Logout => logout(context),
+        HashtrackCommand::List => get_latest_tweets(context).await,
+        HashtrackCommand::Watch => stream_latest_tweets(context),
+        HashtrackCommand::Tracks => list_tracks(context).await,
+        HashtrackCommand::Track { hashtag } => create_track(context, hashtag).await,
+        HashtrackCommand::Untrack { hashtag } => remove_track(context, hashtag).await,
     }
 }
 
-async fn remove_track(context: &mut Context) -> Result<(), CliError> {
-    match context.next_arg() {
-        Some(hashtag) => {
-            let track = track::remove(context, track::Removal { hashtag }).await?;
-            println!("Stopped tracking {}", track.pretty_name);
-            Ok(())
-        }
-        _ => Err(CliError {
-            message: String::from("Expected hashtag name to untrack"),
-            is_usage_error: false,
-        }),
-    }
-}
+#[tokio::main]
+async fn main() {
+    let opt: HashtrackOpt = HashtrackOpt::from_args();
+    let mut context = Context::new(opt.config, opt.endpoint).unwrap();
 
-fn run_subcommand(context: &mut Context) -> Result<(), CliError> {
-    let mut runtime = Runtime::new().unwrap();
-    match context.next_arg().as_ref().map(String::as_str) {
-        Some("status") => runtime.block_on(status(context)),
-        Some("login") => runtime.block_on(login(context)),
-        Some("logout") => logout(context),
-        Some("list") => runtime.block_on(get_latest_tweets(context)),
-        Some("watch") => stream_latest_tweets(context),
-        Some("tracks") => runtime.block_on(list_tracks(context)),
-        Some("track") => runtime.block_on(create_track(context)),
-        Some("untrack") => runtime.block_on(remove_track(context)),
-        Some(x) => Err(CliError {
-            message: format!("Unknown command {}", x).to_string(),
-            is_usage_error: true,
-        }),
-        _ => Err(CliError {
-            message: "Missing argument".to_string(),
-            is_usage_error: true,
-        }),
-    }
-}
-
-fn main() {
-    let mut opts = Options::new();
-    opts.optopt("e", "endpoint", "The hashtrack service endpoint", "ENPOINT")
-        .optopt("c", "config", "The config file location", "PATH_TO_CONFIG");
-    let mut context = Context::new(env::args().collect(), opts).unwrap();
-
-    match run_subcommand(&mut context) {
+    match run_subcommand(&mut context, opt.command).await {
         Ok(_) => (),
         Err(error) => {
-            if error.is_usage_error {
-                println!("{}", USAGE);
-            } else {
-                println!("{}", error.message);
-            }
+            println!("{:?}", error);
         }
     }
 }

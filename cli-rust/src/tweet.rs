@@ -1,5 +1,6 @@
 use super::api;
 use super::context::Context;
+use crate::common::try_send_query;
 use ansi_term::Color;
 use api::ws;
 use api::ws::WsMessage;
@@ -64,33 +65,27 @@ impl fmt::Display for Tweet {
     }
 }
 
-pub async fn get_latest(context: &Context, search: String) -> Result<Vec<Tweet>, api::Error> {
-    let res = api::build_base_request(context)
-        .json(&Tweets::build_query(tweets::Variables { search }))
-        .send()
-        .await?
-        .json::<Response<tweets::ResponseData>>()
-        .await?;
-    match res.data {
-        Some(data) => Ok(data
-            .tweets
-            .iter()
-            .rev()
-            .map(|tweet| Tweet {
-                id: tweet.id.clone(),
-                author_name: tweet.author_name.clone(),
-                text: tweet.text.clone(),
-                published_at: DateTime::parse_from_rfc3339(&tweet.published_at).unwrap(),
-            })
-            .collect()),
-        _ => Err(api::Error(api::get_error_message(res).to_string())),
-    }
+pub async fn get_latest(context: &Context, search: String) -> Result<Vec<Tweet>, api::ApiError> {
+    let data: tweets::ResponseData =
+        try_send_query(context, &Tweets::build_query(tweets::Variables { search })).await?;
+    let result = data
+        .tweets
+        .iter()
+        .rev()
+        .map(|tweet| Tweet {
+            id: tweet.id.clone(),
+            author_name: tweet.author_name.clone(),
+            text: tweet.text.clone(),
+            published_at: DateTime::parse_from_rfc3339(&tweet.published_at).unwrap(),
+        })
+        .collect();
+    Ok(result)
 }
 
 pub fn stream_latest(context: &Context, search: String) -> Receiver<Tweet> {
     let (tx, rx): (Sender<Tweet>, Receiver<Tweet>) = mpsc::channel();
     let init_connection = ws::get_connection_init_message(context);
-    let endpoint = context.get_endpoint();
+    let endpoint = context.endpoint.clone();
     thread::spawn(move || {
         let mut client = ws::build_client(endpoint);
         client

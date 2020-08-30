@@ -1,4 +1,3 @@
-use getopts::{Matches, Options};
 use localconfig::Config;
 use std::env;
 use std::io;
@@ -9,8 +8,7 @@ pub mod localconfig;
 const DEFAULT_ENDPOINT: &str = "https://hashtrack.herokuapp.com/graphql";
 
 pub struct Context {
-    matches: Matches,
-    args: Vec<String>,
+    pub endpoint: String,
     config: Config,
 }
 
@@ -36,49 +34,41 @@ impl From<env::VarError> for ContextError {
 }
 
 impl Context {
-    pub fn new(args: Vec<String>, opts: Options) -> Result<Self, ContextError> {
-        let matches = opts.parse(&args[1..]).unwrap();
+    pub fn new(
+        config_opt: Option<String>,
+        endpoint_opt: Option<String>,
+    ) -> Result<Self, ContextError> {
         let mut config_path = PathBuf::new();
-        match matches.opt_str("config") {
+        match config_opt {
             Some(path) => {
                 config_path.push(path);
             }
             None => {
-                config_path.push(&env::var("HOME")?);
+                config_path.push(
+                    &env::var("HOME")
+                        .expect("Either -e flag or HOME environment variable should be set"),
+                );
                 config_path.push(".hashtrack.config");
             }
         };
-        let free_args = &matches.free;
-        Ok(Context {
-            matches: matches.clone(),
-            args: free_args.to_owned(),
-            config: Config::load(&config_path)?,
-        })
-    }
-    pub fn next_arg(&mut self) -> Option<String> {
-        let arg = self.args.get(0).map(String::clone);
-        if self.args.len() > 0 {
-            self.args.remove(0);
-        }
-
-        return arg;
+        let config = Config::load(&config_path)?;
+        let endpoint = endpoint_opt.unwrap_or(
+            config
+                .contents
+                .endpoint
+                .as_deref()
+                .unwrap_or(DEFAULT_ENDPOINT)
+                .to_string(),
+        );
+        Ok(Context { endpoint, config })
     }
 
     pub fn set_token(&mut self, token: Option<String>) -> io::Result<()> {
         self.config.contents.token = token;
         self.config.save()
     }
-    pub fn get_token(&self) -> Option<String> {
-        self.config.contents.token.clone()
-    }
-    pub fn get_endpoint(&self) -> String {
-        self.matches.opt_str("endpoint").unwrap_or(
-            self.config
-                .contents
-                .endpoint
-                .as_ref()
-                .unwrap_or(&DEFAULT_ENDPOINT.to_string())
-                .to_string(),
-        )
+
+    pub fn token(&self) -> Option<&str> {
+        self.config.contents.token.as_deref()
     }
 }
