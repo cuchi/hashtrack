@@ -1,7 +1,7 @@
 use super::api;
 use super::context::Context;
-use graphql_client::GraphQLQuery;
 use crate::common::try_send_query;
+use graphql_client::GraphQLQuery;
 
 #[derive(GraphQLQuery)]
 #[graphql(
@@ -20,8 +20,9 @@ pub struct User {
 pub async fn get_current(context: &Context) -> Result<User, api::ApiError> {
     let data: current_user::ResponseData = try_send_query(
         context,
-        &CurrentUser::build_query(current_user::Variables {}))
-        .await?;
+        &CurrentUser::build_query(current_user::Variables {}),
+    )
+    .await?;
     Ok(User {
         id: data.current_user.id,
         name: data.current_user.name,

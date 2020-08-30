@@ -1,5 +1,6 @@
 use super::api;
 use super::context::Context;
+use crate::common::try_send_query;
 use ansi_term::Color;
 use api::ws;
 use api::ws::WsMessage;
@@ -13,7 +14,6 @@ use std::sync::mpsc::{Receiver, Sender};
 use std::thread;
 use textwrap::Wrapper;
 use websocket::OwnedMessage;
-use crate::common::try_send_query;
 
 const WRAPPER: Wrapper<'_, textwrap::NoHyphenation> = Wrapper {
     splitter: textwrap::NoHyphenation,
@@ -66,10 +66,8 @@ impl fmt::Display for Tweet {
 }
 
 pub async fn get_latest(context: &Context, search: String) -> Result<Vec<Tweet>, api::ApiError> {
-    let data: tweets::ResponseData = try_send_query(
-        context,
-        &Tweets::build_query(tweets::Variables { search }))
-        .await?;
+    let data: tweets::ResponseData =
+        try_send_query(context, &Tweets::build_query(tweets::Variables { search })).await?;
     let result = data
         .tweets
         .iter()

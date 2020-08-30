@@ -1,10 +1,10 @@
+use crate::opts::{HashtrackCommand, HashtrackOpt};
 use context::Context;
+use derive_more::From;
 use rpassword::read_password_from_tty;
 use std::io;
-use text_io::read;
 use structopt::StructOpt;
-use crate::opts::{HashtrackOpt, HashtrackCommand};
-use derive_more::From;
+use text_io::read;
 
 mod api;
 mod common;
@@ -18,7 +18,7 @@ mod user;
 #[derive(Debug, From)]
 enum CliError {
     IoError(io::Error),
-    ApiError(api::ApiError)
+    ApiError(api::ApiError),
 }
 
 async fn login(context: &mut Context) -> Result<(), CliError> {
@@ -91,8 +91,8 @@ async fn run_subcommand(context: &mut Context, opts: HashtrackCommand) -> Result
         HashtrackCommand::List => get_latest_tweets(context).await,
         HashtrackCommand::Watch => stream_latest_tweets(context),
         HashtrackCommand::Tracks => list_tracks(context).await,
-        HashtrackCommand::Track {hashtag} => create_track(context, hashtag).await,
-        HashtrackCommand::Untrack {hashtag} => remove_track(context, hashtag).await,
+        HashtrackCommand::Track { hashtag } => create_track(context, hashtag).await,
+        HashtrackCommand::Untrack { hashtag } => remove_track(context, hashtag).await,
     }
 }
 

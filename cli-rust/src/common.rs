@@ -3,7 +3,10 @@ use super::context::Context;
 use graphql_client::Response;
 use serde::{Deserialize, Serialize};
 
-pub async fn try_send_query<T: Serialize + ?Sized, R: for <'a> Deserialize<'a>>(context: &Context, json: &T) -> Result<R, api::ApiError> {
+pub async fn try_send_query<T: Serialize + ?Sized, R: for<'a> Deserialize<'a>>(
+    context: &Context,
+    json: &T,
+) -> Result<R, api::ApiError> {
     let res = build_base_request(context)
         .json(json)
         .send()

@@ -7,9 +7,8 @@ pub struct HashtrackOpt {
     #[structopt(short, long)]
     pub endpoint: Option<String>,
     #[structopt(subcommand)]
-    pub command: HashtrackCommand
+    pub command: HashtrackCommand,
 }
-
 
 #[derive(StructOpt)]
 #[structopt(about = "hashtrack COMMAND [OPTIONS, ...]")]
@@ -22,12 +21,10 @@ pub enum HashtrackCommand {
     Tracks,
     Track {
         #[structopt(short, long)]
-        hashtag: String
+        hashtag: String,
     },
     Untrack {
         #[structopt(short, long)]
-        hashtag: String
+        hashtag: String,
     },
 }
-
-

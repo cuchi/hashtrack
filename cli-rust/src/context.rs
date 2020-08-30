@@ -9,7 +9,7 @@ const DEFAULT_ENDPOINT: &str = "https://hashtrack.herokuapp.com/graphql";
 
 pub struct Context {
     pub endpoint: String,
-    config: Config
+    config: Config,
 }
 
 #[derive(Debug)]
@@ -34,7 +34,10 @@ impl From<env::VarError> for ContextError {
 }
 
 impl Context {
-    pub fn new(config_opt: Option<String>, endpoint_opt : Option<String>) -> Result<Self, ContextError> {
+    pub fn new(
+        config_opt: Option<String>,
+        endpoint_opt: Option<String>,
+    ) -> Result<Self, ContextError> {
         let mut config_path = PathBuf::new();
         match config_opt {
             Some(path) => {
@@ -43,7 +46,8 @@ impl Context {
             None => {
                 config_path.push(
                     &env::var("HOME")
-                        .expect("Either -e flag or HOME environment variable should be set"));
+                        .expect("Either -e flag or HOME environment variable should be set"),
+                );
                 config_path.push(".hashtrack.config");
             }
         };
@@ -56,10 +60,7 @@ impl Context {
                 .unwrap_or(DEFAULT_ENDPOINT)
                 .to_string(),
         );
-        Ok(Context {
-            endpoint,
-            config
-        })
+        Ok(Context { endpoint, config })
     }
 
     pub fn set_token(&mut self, token: Option<String>) -> io::Result<()> {

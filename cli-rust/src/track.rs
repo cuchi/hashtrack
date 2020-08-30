@@ -1,10 +1,10 @@
 use super::api;
 use super::context::Context;
+use crate::common::try_send_query;
 use ansi_term::Color;
 use chrono::{DateTime, FixedOffset};
 use graphql_client::GraphQLQuery;
 use std::fmt;
-use crate::common::try_send_query;
 
 #[derive(GraphQLQuery)]
 #[graphql(
@@ -59,10 +59,8 @@ impl fmt::Display for Track {
 }
 
 pub async fn get_all(context: &Context) -> Result<Vec<Track>, api::ApiError> {
-    let data: tracks::ResponseData = try_send_query(
-        context,
-        &Tracks::build_query(tracks::Variables {}))
-        .await?;
+    let data: tracks::ResponseData =
+        try_send_query(context, &Tracks::build_query(tracks::Variables {})).await?;
     let result = data
         .tracks
         .iter()
@@ -76,10 +74,8 @@ pub async fn get_all(context: &Context) -> Result<Vec<Track>, api::ApiError> {
 }
 
 pub async fn create(context: &Context, creation: Creation) -> Result<Track, api::ApiError> {
-    let data: create_track::ResponseData = try_send_query(
-        context,
-        &CreateTrack::build_query(creation))
-        .await?;
+    let data: create_track::ResponseData =
+        try_send_query(context, &CreateTrack::build_query(creation)).await?;
     Ok(Track {
         hashtag_name: data.create_track.hashtag_name.clone(),
         pretty_name: data.create_track.pretty_name.clone(),
@@ -88,10 +84,8 @@ pub async fn create(context: &Context, creation: Creation) -> Result<Track, api:
 }
 
 pub async fn remove(context: &Context, removal: Removal) -> Result<Track, api::ApiError> {
-    let data: remove_track::ResponseData = try_send_query(
-        context,
-        &RemoveTrack::build_query(removal))
-        .await?;
+    let data: remove_track::ResponseData =
+        try_send_query(context, &RemoveTrack::build_query(removal)).await?;
     Ok(Track {
         hashtag_name: data.remove_track.hashtag_name.clone(),
         pretty_name: data.remove_track.pretty_name.clone(),
