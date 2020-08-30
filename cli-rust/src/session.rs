@@ -1,7 +1,7 @@
 use super::api;
 use super::context::Context;
 use graphql_client::GraphQLQuery;
-use graphql_client::Response;
+use crate::common::try_send_query;
 
 #[derive(GraphQLQuery)]
 #[graphql(
@@ -18,14 +18,10 @@ pub struct Session {
 pub type Creation = create_session::Variables;
 
 pub async fn create(context: &Context, creation: Creation) -> Result<Session, api::ApiError> {
-    let res = api::build_base_request(context)
-        .json(&CreateSession::build_query(creation))
-        .send()
-        .await?
-        .json::<Response<create_session::ResponseData>>()
+    let data: create_session::ResponseData = try_send_query(
+        context,
+        &CreateSession::build_query(creation))
         .await?;
-    let errors = res.errors;
-    let data = res.data.ok_or_else(|| errors)?;
     Ok(Session {
         token: data.create_session.token,
     })

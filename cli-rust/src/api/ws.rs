@@ -32,7 +32,7 @@ pub fn get_connection_init_message(context: &Context) -> Vec<u8> {
         id: None,
         msg_type: String::from("connection_init"),
         payload: Some(SubscriptionInitPayload {
-            authorization: context.get_token().unwrap_or(String::from("")),
+            authorization: context.token().unwrap_or("").into(),
         }),
     };
     serde_json::to_vec(&message).unwrap()

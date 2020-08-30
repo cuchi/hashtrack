@@ -87,7 +87,7 @@ pub async fn get_latest(context: &Context, search: String) -> Result<Vec<Tweet>,
 pub fn stream_latest(context: &Context, search: String) -> Receiver<Tweet> {
     let (tx, rx): (Sender<Tweet>, Receiver<Tweet>) = mpsc::channel();
     let init_connection = ws::get_connection_init_message(context);
-    let endpoint = context.get_endpoint();
+    let endpoint = context.endpoint.clone();
     thread::spawn(move || {
         let mut client = ws::build_client(endpoint);
         client
