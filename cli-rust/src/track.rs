@@ -2,8 +2,9 @@ use super::api;
 use super::context::Context;
 use ansi_term::Color;
 use chrono::{DateTime, FixedOffset};
-use graphql_client::{GraphQLQuery, Response};
+use graphql_client::GraphQLQuery;
 use std::fmt;
+use crate::common::try_send_query;
 
 #[derive(GraphQLQuery)]
 #[graphql(
@@ -57,57 +58,43 @@ impl fmt::Display for Track {
     }
 }
 
-pub async fn get_all(context: &Context) -> Result<Vec<Track>, api::Error> {
-    let res = api::build_base_request(context)
-        .json(&Tracks::build_query(tracks::Variables {}))
-        .send()
-        .await?
-        .json::<Response<tracks::ResponseData>>()
+pub async fn get_all(context: &Context) -> Result<Vec<Track>, api::ApiError> {
+    let data: tracks::ResponseData = try_send_query(
+        context,
+        &Tracks::build_query(tracks::Variables {}))
         .await?;
-    match res.data {
-        Some(data) => Ok(data
-            .tracks
-            .iter()
-            .map(|track| Track {
-                hashtag_name: track.hashtag_name.clone(),
-                pretty_name: track.pretty_name.clone(),
-                created_at: DateTime::parse_from_rfc3339(&track.created_at).unwrap(),
-            })
-            .collect()),
-        _ => Err(api::Error(api::get_error_message(res).to_string())),
-    }
+    let result = data
+        .tracks
+        .iter()
+        .map(|track| Track {
+            hashtag_name: track.hashtag_name.clone(),
+            pretty_name: track.pretty_name.clone(),
+            created_at: DateTime::parse_from_rfc3339(&track.created_at).unwrap(),
+        })
+        .collect();
+    Ok(result)
 }
 
-pub async fn create(context: &Context, creation: Creation) -> Result<Track, api::Error> {
-    let res = api::build_base_request(context)
-        .json(&CreateTrack::build_query(creation))
-        .send()
-        .await?
-        .json::<Response<create_track::ResponseData>>()
+pub async fn create(context: &Context, creation: Creation) -> Result<Track, api::ApiError> {
+    let data: create_track::ResponseData = try_send_query(
+        context,
+        &CreateTrack::build_query(creation))
         .await?;
-    match res.data {
-        Some(data) => Ok(Track {
-            hashtag_name: data.create_track.hashtag_name.clone(),
-            pretty_name: data.create_track.pretty_name.clone(),
-            created_at: DateTime::parse_from_rfc3339(&data.create_track.created_at).unwrap(),
-        }),
-        _ => Err(api::Error(api::get_error_message(res).to_string())),
-    }
+    Ok(Track {
+        hashtag_name: data.create_track.hashtag_name.clone(),
+        pretty_name: data.create_track.pretty_name.clone(),
+        created_at: DateTime::parse_from_rfc3339(&data.create_track.created_at).unwrap(),
+    })
 }
 
-pub async fn remove(context: &Context, removal: Removal) -> Result<Track, api::Error> {
-    let res = api::build_base_request(context)
-        .json(&RemoveTrack::build_query(removal))
-        .send()
-        .await?
-        .json::<Response<remove_track::ResponseData>>()
+pub async fn remove(context: &Context, removal: Removal) -> Result<Track, api::ApiError> {
+    let data: remove_track::ResponseData = try_send_query(
+        context,
+        &RemoveTrack::build_query(removal))
         .await?;
-    match res.data {
-        Some(data) => Ok(Track {
-            hashtag_name: data.remove_track.hashtag_name.clone(),
-            pretty_name: data.remove_track.pretty_name.clone(),
-            created_at: DateTime::parse_from_rfc3339(&data.remove_track.created_at).unwrap(),
-        }),
-        _ => Err(api::Error(api::get_error_message(res).to_string())),
-    }
+    Ok(Track {
+        hashtag_name: data.remove_track.hashtag_name.clone(),
+        pretty_name: data.remove_track.pretty_name.clone(),
+        created_at: DateTime::parse_from_rfc3339(&data.remove_track.created_at).unwrap(),
+    })
 }

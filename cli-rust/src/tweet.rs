@@ -13,6 +13,7 @@ use std::sync::mpsc::{Receiver, Sender};
 use std::thread;
 use textwrap::Wrapper;
 use websocket::OwnedMessage;
+use crate::common::try_send_query;
 
 const WRAPPER: Wrapper<'_, textwrap::NoHyphenation> = Wrapper {
     splitter: textwrap::NoHyphenation,
@@ -64,27 +65,23 @@ impl fmt::Display for Tweet {
     }
 }
 
-pub async fn get_latest(context: &Context, search: String) -> Result<Vec<Tweet>, api::Error> {
-    let res = api::build_base_request(context)
-        .json(&Tweets::build_query(tweets::Variables { search }))
-        .send()
-        .await?
-        .json::<Response<tweets::ResponseData>>()
+pub async fn get_latest(context: &Context, search: String) -> Result<Vec<Tweet>, api::ApiError> {
+    let data: tweets::ResponseData = try_send_query(
+        context,
+        &Tweets::build_query(tweets::Variables { search }))
         .await?;
-    match res.data {
-        Some(data) => Ok(data
-            .tweets
-            .iter()
-            .rev()
-            .map(|tweet| Tweet {
-                id: tweet.id.clone(),
-                author_name: tweet.author_name.clone(),
-                text: tweet.text.clone(),
-                published_at: DateTime::parse_from_rfc3339(&tweet.published_at).unwrap(),
-            })
-            .collect()),
-        _ => Err(api::Error(api::get_error_message(res).to_string())),
-    }
+    let result = data
+        .tweets
+        .iter()
+        .rev()
+        .map(|tweet| Tweet {
+            id: tweet.id.clone(),
+            author_name: tweet.author_name.clone(),
+            text: tweet.text.clone(),
+            published_at: DateTime::parse_from_rfc3339(&tweet.published_at).unwrap(),
+        })
+        .collect();
+    Ok(result)
 }
 
 pub fn stream_latest(context: &Context, search: String) -> Receiver<Tweet> {

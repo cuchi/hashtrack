@@ -44,7 +44,7 @@ impl Context {
                 config_path.push(path);
             }
             None => {
-                config_path.push(&env::var("HOME")?);
+                config_path.push(&env::var("HOME").unwrap_or("".into()));
                 config_path.push(".hashtrack.config");
             }
         };

@@ -11,6 +11,7 @@ use text_io::read;
 use tokio::runtime::Runtime;
 
 mod api;
+mod common;
 mod context;
 mod session;
 mod track;
@@ -50,10 +51,10 @@ impl From<io::Error> for CliError {
     }
 }
 
-impl From<api::Error> for CliError {
-    fn from(error: api::Error) -> Self {
+impl From<api::ApiError> for CliError {
+    fn from(error: api::ApiError) -> Self {
         CliError {
-            message: error.0,
+            message: format!("{:?}", error),
             is_usage_error: false,
         }
     }
