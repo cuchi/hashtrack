@@ -11,7 +11,7 @@
     "@koa/cors": "3.0.0",
     "@typescript-eslint/eslint-plugin": "2.17.0",
     "@typescript-eslint/parser": "2.17.0",
-    "apollo-server-koa": "2.9.16",
+    "apollo-server-koa": "2.17.0",
     "bcrypt": "3.0.7",
     "class-validator": "0.11.0",
     "date-fns": "2.9.0",
