@@ -29,7 +29,7 @@
     "twit": "2.2.11",
     "type-graphql": "0.17.6",
     "typedi": "0.8.0",
-    "typeorm": "0.2.22",
+    "typeorm": "0.2.25",
     "typeorm-typedi-extensions": "0.2.3",
     "winston": "3.2.1"
   },
