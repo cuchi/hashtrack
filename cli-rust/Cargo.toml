@@ -15,7 +15,7 @@ tokio = { version = "0.2.22", features = ["rt-threaded", "macros"] }
 rpassword = "4.0"
 text_io = "0.1.8"
 http = "0.2.0"
-websocket = "0.24.0"
+websocket = "0.26.5"
 textwrap = "0.11.0"
 ansi_term = "0.12.1"
 chrono = { version = "0.4.10", features = ["serde"] }
